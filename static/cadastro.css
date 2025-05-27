@@ -1,0 +1,141 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    scroll-behavior: smooth;
+}
+body {
+    background-image: linear-gradient(to right, rgb(0, 0, 0), rgb(22, 17, 17));
+    color: #f4f4f4;
+    text-align: center;
+    padding: 25px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+header{
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 19px;
+    text-decoration: underline;
+}
+.Container{
+    background-color: black;
+    box-shadow: 0px 0px 10px gold;
+    padding: 30px;
+    max-width: 500px;
+    margin: 10px auto;
+    border-radius: 10px;
+}
+.Botao{
+    display: inline;
+    margin-top: 20px;
+    background-color: black;
+    color: #f4f4f4;
+    border: solid white;
+    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 5px;
+    transition: 700ms;
+}
+#Botao{
+    display: inline;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: black;
+    color: #f4f4f4;
+    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 5px;
+    border-style: none;
+    transition: 700ms;
+}
+#Botao:hover{
+    background-color: #f4f4f4;
+    color: black;
+}
+#Botao a{
+    color: #f4f4f4;
+}
+#Botao:hover a{
+    color: black;
+}
+#Voltar{
+    display: inline;
+    margin-top: 20px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    padding: 12px 24px;
+    border-radius: 5px;
+    border-style: none;
+}
+a{
+    text-decoration: none;
+    color: #f4f4f4;
+}
+.Botao:hover{
+    border: solid gold;
+    color: gold;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+input{
+    padding: 10px;
+    border-radius: 5px;
+}
+input[type="file"]{
+    cursor: pointer;
+    appearance: none;
+}
+input[type="file"]::file-selector-button {
+    border-radius: 4px;
+    padding: 0 16px;
+    height: 40px;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.05);
+    margin-right: 16px;
+    transition: 300ms;
+}
+input[type="file"]::file-selector-button:hover {
+    background-color: #cfcfcf;
+}
+input[type="file"]::file-selector-button:active {
+    background-color: #e5e7eb;
+    transform: scale(0.95);
+}
+input[name="username"] {
+    text-transform: uppercase;
+}
+
+input[name="username"]::placeholder {
+    text-transform: none;
+}
+
+footer{
+    margin-top: 25px;
+    font-size: 14px;
+    color: gray;
+}
+button:active{
+    transform: scale(0.95);
+}
+#abt{
+    padding: 10px;
+}
+.Gosling{
+    height: 250px;
+    width: 250px;
+    border-radius: 95%;
+    margin-top: 10px;
+    justify-content: center;
+}
+li{
+    list-style: none;
+}

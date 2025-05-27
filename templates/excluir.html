@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cadastro.css') }}">
+    <link rel="shortcut icon" type="image/png" href="https://img.freepik.com/vetores-premium/letra-c-ou-iniciais-cc-ouro-luxo-dourado-elegante-elegante-simples-minimal-icone-vector-logo-design_216988-1942.jpg">
+    <title>CritiCard - Edit</title>
+</head>
+<body>
+    <div class="Container">
+        <header><h2>EXCLUIR PERFIL</h2></header>
+        <form method="POST" enctype="multipart/form-data">
+            USERNAME: <input type="text" placeholder="Crie um username único..." value="{{ user['username'] }}" maxlength="15" readonly name="username" required>
+            Senha: <input type="password" name="senha" placeholder="Digite sua senha..." id="Cad">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
+            <button type="submit" class="Botao"><b>CONFIRMAR</b></button>
+    </form>
+        <a href=" {{ url_for('edit') }}"><button id="Botao"><b>VOLTAR</b></button></a>
+    </div>
+    <footer>
+        <p>&copy;2025 - LD</p>
+    </footer>
+    <script>
+        const inputImagem = document.getElementById('imagem');
+        const imgPreview = document.getElementById('Icone_user');
+        inputImagem.addEventListener('change', function() {
+        const arquivo = this.files[0];
+        if (arquivo) {
+            const leitor = new FileReader();
+            leitor.onload = function(e) {
+                imgPreview.src = e.target.result;
+            };
+            leitor.readAsDataURL(arquivo);
+        }
+    });
+    </script>
+</body>
+</html>

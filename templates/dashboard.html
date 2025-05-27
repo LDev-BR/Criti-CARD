@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LD: Reviews</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    <link rel="shortcut icon" type="image/png" href="https://img.freepik.com/vetores-premium/letra-c-ou-iniciais-cc-ouro-luxo-dourado-elegante-elegante-simples-minimal-icone-vector-logo-design_216988-1942.jpg">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+    crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <h1 class="Lindao" id="Inici"><a href="">{{ usuario.username }}</a></h1>
+    </header>
+    <div class="container">
+        <div class="card">
+            <div class="slide slide1">
+                <div class="content">
+                    <div class="icon">
+                        {% if usuario.imagem %}
+                        <img src="{{ url_for('static', filename='uploads/' + usuario.imagem) }}" id="Icone_user" class="Gosling">
+                        {% else %}
+                        <img src="https://images.squarespace-cdn.com/content/63e808d50662b07891161bd5/57e49857-68b5-41f2-ba82-fc3b6f9b58fb/Yellow-profile.png?content-type=image%2Fpng" id="Icone_user" class="Gosling">
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="slide slide2">
+                <div class="content">
+                    <h3>
+                        {{usuario.nome}}
+                    </h3>
+                    <p>{{ usuario.apelido }} <br><a href="{{ url_for('edit') }}"><button class="Enviarbotao">EDITAR</button></a>
+                    <a href="{{ url_for('logout') }}"><button class="Enviarbotao">SAIR</button></a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <main class="Biografia">
+        <h2 class="Summary"><strong>SOBRE MIM</strong></h2> <br>
+        <p>{{ usuario.about.replace('\n', '<br>')|safe}}</p> <br>
+        {% if usuario.admin == 1 %}
+            <a href=" {{ url_for('admin_excluir') }} "><button class="Enviarbotao">EXCLUIR USER</button></a>
+            <a href=" {{ url_for('listar_mensagens') }} "><button class="Enviarbotao">VER MENSAGENS</button></a>
+            <a href=" {{ url_for('listar_users') }} "><button class="Enviarbotao">LISTAR USUÁRIOS</button></a>
+        {% endif %}
+    </main>
+    <div>
+        <h4 class="Hobbins" id="RevTt">MEUS CARDS:</h4>
+        <ul class="Caixas">
+            {% if card %}
+                {% for c in card %}
+                    <li id="Games">
+                        <div>
+                            <strong id="Tt"><h2>{{ c.titulo }}</h2></strong><a href=""><img src="{{ url_for('static', filename='cards/' + c.capa) }}" alt="" id="Foto"></a><p class="Nota">Nota: <b class="Notas">{{ c.nota }}</b></p>
+                        </div>
+                        <div id="Card_Desc">
+                            <h3>{{ c.titulo }}</h3><br>
+                            <p>{{ c.sobre.replace('\n', '<br>')|safe }}</p>
+                            <a href="/deletar_card/{{ c.id }}"><button class="Enviarbotao">EXCLUIR</button></a>
+                        </div>
+                    </li>
+                {% endfor %}
+                {% else %}
+                    <li id="Games">
+                        <div>
+                            <strong id="Tt"><h2>TITULO DO CARD!!!</h2></strong><a href=""><img src="https://images.squarespace-cdn.com/content/63e808d50662b07891161bd5/57e49857-68b5-41f2-ba82-fc3b6f9b58fb/Yellow-profile.png?content-type=image%2Fpng" alt="" id="Foto"></a><p class="Nota">Nota: <b class="Notas">EX</b></p>
+                        </div>
+                        <div id="Card_Desc">
+                            <h3>Crie já seu card!!!</h3><br>
+                            <a href="{{ url_for('cadastro_cards') }}" style="color: #f4f4f4;">CRIAR</a>
+                        </div>
+                    </li>
+            {% endif %}
+        </ul>
+    </div>
+    <nav>
+        <ul class="Cabeç">
+            <li id="Rot"><a href="{{ url_for('cadastro_cards') }}">CRIAR CARD</a></li>
+        </ul>
+    </nav>
+    <div>
+        <section class="Formulário">
+            <h3>SUPORTE</h3>
+            <form action="/mensagem" method="POST">
+                <label for="Nome">USERNAME:</label> <br>
+                <input type="text" id="Nome" placeholder="Digite seu nome" value="{{ usuario.username }}" name="nome" readonly required> <br>
+                <label for="Email">Email: <br><input type="email" id="Ema" name="email" placeholder="Email" value="{{ usuario.email }}" readonly required></label> <br>
+                <label for="Contatar">Mensagem: <br><textarea name="mensagem" placeholder="Disserte" maxlength="100" rows="3" required></textarea></label> <br>
+                <button type="submit" class="Enviarbotao">Enviar</button>
+            </form>
+        </section>
+    </div>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
+            <br>
+    <footer class="rodape" id="contato">
+        <div class="rodape-div">
+            <div class="rodape-div-2">
+                <div class="rodape-div-2-coluna">
+                    <span><b>Contatos</b></span>
+                    <p><a href="">luisestudante235@gmail.com</a></p>
+                    <p>+55 82 99685-2419</p>
+                </div>
+            </div>
+            <div class="rodape-div-3">
+                <div class="rodape-div-3-coluna">
+                    <span><b>Links</b></span>
+                    <p><a href="https://github.com/LDev-BR" target="none">Github</a></p>
+                </div>
+            </div>
+            <div class="rodape-div-4">
+                <div class="rodape-div-4-coluna">
+                    <span><b>Outros</b></span>
+                    <p>Políticas de Privacidade</p>
+                </div>
+            </div>
+        </div>
+        <p class="rodape-direitos">Copyright © 2025 – Todos os Direitos Reservados.</p>
+    </footer>
+</body>
+</html>

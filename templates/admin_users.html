@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cadastro.css') }}">
+    <link rel="shortcut icon" type="image/png" href="https://img.freepik.com/vetores-premium/letra-c-ou-iniciais-cc-ouro-luxo-dourado-elegante-elegante-simples-minimal-icone-vector-logo-design_216988-1942.jpg">
+    <title>CritiCard - Edit</title>
+</head>
+<body>
+    <div class="Container">
+        <ul>
+        {% if users %}
+            {% for u in users %}
+                <li><h4>{{ u.username }}</h4>
+                <h5>{{ u.email }}</h5>
+                <p>{{ u.nome }}</p>
+                </li><br>
+            {% endfor %}
+        {% else %}
+                <p>Sem users!!! (Estranho?)</p>
+        {% endif %}
+        </ul>
+        <a href=" {{ url_for('dashboard') }} "><button id="Botao">VOLTAR</button></a>
+    </div>
+    <footer>
+        <p>&copy;2025 - LD</p>
+    </footer>
+</body>
+</html>

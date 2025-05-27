@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cadastro.css') }}">
+    <link rel="shortcut icon" type="image/png" href="https://img.freepik.com/vetores-premium/letra-c-ou-iniciais-cc-ouro-luxo-dourado-elegante-elegante-simples-minimal-icone-vector-logo-design_216988-1942.jpg">
+    <title>CritiCard - Deletar</title>
+</head>
+<body>
+    <div class="Container">
+        <header><h2>DELETAR USUÁRIO</h2></header>
+        <form method="POST">
+            USERNAME: <input type="text" placeholder="Crie um username único..." name="dlun" required>
+            SENHA: <input type="password" name="dlsn" placeholder="Digite sua senha..." required>
+            <button type="submit" class="Botao"><b>DELETAR</b></button>
+    </form>
+        <a href=" {{ url_for('index') }}"><button id="Botao"><b>VOLTAR</b></button></a>
+    </div>
+    <footer>
+        <p>&copy;2025 - LD</p>
+    </footer>
+</body>
+</html>

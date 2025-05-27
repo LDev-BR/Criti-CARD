@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cadastro.css') }}">
+    <link rel="shortcut icon" type="image/png" href="https://img.freepik.com/vetores-premium/letra-c-ou-iniciais-cc-ouro-luxo-dourado-elegante-elegante-simples-minimal-icone-vector-logo-design_216988-1942.jpg">
+    <title>CritiCard - Cadastro</title>
+</head>
+<body>
+    <div class="Container">
+        <header><h2>CADASTRE-SE</h2></header>
+        <form method="POST" enctype="multipart/form-data">
+            USERNAME: <input type="text" placeholder="Crie um username único..." maxlength="15" name="username" required>
+            NOME: <input type="text" name="nome" placeholder="Digite seu nome..." maxlength="15" required>
+            FOTO DE PERFIL: <label for="imagem"><img src="" alt="" id="Cadimg" class="Gosling"></label><input type="file" name="imagem" id="imagem">
+            APELIDO: <input type="text" name="apelido" maxlength="20" placeholder="Digite algo que te descreva bem para os outros..." required>
+            SOBRE MIM <textarea name="about" id="abt" placeholder="Digite uma descrição sobre você..." maxlength="2000"  rows="3" required></textarea>
+            EMAIL: <input type="email" name="email" placeholder="Digite o seu email..." required>
+            SENHA: <input type="password" name="senha" placeholder="Digite sua senha..." required>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <h4>ERRO:</h4>
+                <ul class=flashes>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
+            <button type="submit" class="Botao"><b>REGISTRAR</b></button>
+    </form>
+        <a href=" {{ url_for('index') }}"><button id="Botao"><b>VOLTAR</b></button></a>
+    </div>
+    <footer>
+        <p>&copy;2025 - LD</p>
+    </footer>
+    <script>
+        const inputImagem = document.getElementById('imagem');
+        const imgPreview = document.getElementById('Cadimg');
+        inputImagem.addEventListener('change', function() {
+        const arquivo = this.files[0];
+        if (arquivo) {
+            const leitor = new FileReader();
+            leitor.onload = function(e) {
+                imgPreview.src = e.target.result;
+            };
+            leitor.readAsDataURL(arquivo);
+        }
+    });
+    </script>
+</body>
+</html>

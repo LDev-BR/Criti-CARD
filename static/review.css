@@ -1,0 +1,294 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{
+    scroll-behavior: smooth;
+}
+body {
+    background-image: linear-gradient(to right, rgb(0, 0, 0), rgb(22, 17, 17));
+    color: #f4f4f4;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+/* Links do topo */
+.Cabeç{
+    justify-content: center;
+    display: inline-flex;
+    gap: 30px;
+    margin-top: 5px;
+}
+.Cabeç a:hover{
+    color: gold;
+    transition-duration: 800ms;
+}
+.Cabeç li{
+    list-style: none;
+    padding: 2px;
+    border-radius: 5px;
+}
+.Cabeç li a{
+    text-decoration: none;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+}
+.Cabeç li:hover{
+    transform: scale(1.2);
+    transition-duration: 700ms;
+}
+.Cabeç li:active{
+    transform: scale(0.8);
+}
+#Rot{
+    background-color: black;
+
+    font-family: 'Times New Roman', Times, serif;
+}
+/*Titulo da página*/
+.Lindao{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 100px;
+    border-color: rgb(199, 199, 193);
+    border-style: outset;
+    color: gold;
+    line-height: 180px;
+    margin-top: 30px;
+}
+.Lindao a{
+    color: gold;
+    text-decoration: none;
+}
+input{
+    border-radius: 5px;
+    border-style: outset;
+    padding: 2px;
+    border-color: #a8a0a0;
+}
+textarea{
+    border-radius: 5px;
+    border-style: outset;
+    padding: 5px;
+}
+/* Botões */
+button{
+    background-color: #f4f4f4;
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    border-style: solid;
+    padding: 2px;
+    margin-top: 3px;
+}
+button:hover{
+    background-color: black;
+    color: gold;
+    border-radius: 5px;
+    cursor: pointer;
+    border-style: solid;
+    border-color: gold;
+    padding: 2px;
+}
+button:active{
+    transform: scale(0.95);
+}
+.Enviarbotao{
+    background-color: #f4f4f4;
+}
+/* Review */
+#Capa{
+    border-radius: 10px;
+    border: white;
+    border-style: solid;
+    margin: 20px 0px 0px 0px;
+    width: 1200px;
+    max-width: 1200px;
+    justify-content: center;
+}
+.Biografia{
+    text-align: justify;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 50px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    box-shadow: 0px 0px 10px rgb(97, 97, 97);
+    width: 1500px;
+}
+.TT{
+    color: gold;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 67px;
+    margin-top: 10PX;
+    text-decoration: underline;
+}
+.Resumin{
+    margin: 10px 150px;
+    text-align: justify;
+    font-size: 20px;
+}
+.ResuminTT{
+    text-align: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-size: 50px;
+}
+.Notin{
+    color: gold;
+    text-decoration: dotted;
+}
+/*Quadro*/
+.PosNeg{
+    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 0px 0px 0px 10px;
+}
+.Posi{
+    background-color: #181818;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: solid #a8a0a0;
+}
+.Posi li{
+    margin-left: 50px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    list-style: inside;
+}
+.Negi{
+    background-color: #181818;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border: solid #a8a0a0;
+}
+.Negi li{
+    margin-left: 50px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+    list-style: inside;
+}
+.PosNegTT{
+    text-align: center; 
+    padding: 30px;
+}
+#Pst{
+    color: greenyellow;
+}
+#Nst{
+    color: red;
+}
+/*Voltar ao topo*/
+.In{
+    background: none;
+    color: #f4f4f4;
+    position: fixed;
+    right: 30px;
+    bottom: 260px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    padding: 10px 10px;
+    font-size: 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    border-style: solid white;
+}
+.In:hover{
+    background: none;
+    color: gold;
+}
+/* Botões */
+button{
+    background-color: #f4f4f4;
+    color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    border-style: solid;
+    padding: 2px;
+    margin-top: 3px;
+}
+button:hover{
+    background-color: black;
+    color: gold;
+    border-radius: 5px;
+    cursor: pointer;
+    border-style: solid;
+    border-color: gold;
+    padding: 2px;
+}
+button:active{
+    transform: scale(0.95);
+}
+/*Fómulário e inputs*/
+.Formulário{
+    padding: 20px;
+    background-color: rgb(29, 28, 28);
+    color: white;
+    width: 400px;
+    margin: 30px auto;
+    gap: 20px;
+    border-radius: 50px;
+    line-height: 25px;
+    border: #a8a0a0 solid;
+}
+input{
+    border-radius: 5px;
+    border-style: outset;
+    padding: 2px;
+    border-color: #a8a0a0;
+    background-color: black;
+}
+textarea{
+    border-radius: 5px;
+    border-style: outset;
+    padding: 5px;
+    background-color: black;
+    border-color: #a8a0a0;
+}
+.Enviarbotao{
+    background-color: #252424;
+    color: #f4f4f4;
+    border: #f4f4f4;
+    border-style: solid;
+}
+/*Rodapé*/
+.rodape{
+    background-color: #181818;
+    color: white;
+    height: auto;
+    width: 100%;
+    font-size: 14px;
+    font-family: helvetica;
+}
+.rodape a{
+    text-decoration: none;
+    color: white;
+}
+.rodape p{
+    margin-bottom: 5px;
+}
+.rodape-div{
+    display: flex;
+    flex-wrap: wrap;
+    width:100%;
+    margin: auto;
+    justify-content: center;
+    gap: 500px;
+    padding: 60px 10px 40px 10px;
+}
+.rodape-div-1, .rodape-div-2, .rodape-div-3, .rodape-div-4{
+    display: flex;
+    padding: 10px;
+}
+.rodape span{
+    font-size: 20px;
+    color: white;
+}
+.rodape-direitos{
+    background-color: black;
+    padding: 20px;
+    margin: 0px;
+    text-align: center;
+}
+/*Ex*/
