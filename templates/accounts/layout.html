@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='accounts.css') }}">{% endblock %}
+{% block content %}
+<div class="accounts-layout">
+    <section class="accounts-intro"><p class="eyebrow">SUA CONTA, SUAS HISTÓRIAS</p><h1>O próximo capítulo<br><em>é seu.</em></h1><p class="muted">Sua coleção e suas descobertas continuam aqui. Cuide do acesso à sua conta para seguir de onde parou.</p><a class="back-link" href="{{ url_for('auth.index') }}">{{ icon('chevron-left') }} Voltar para entrar</a></section>
+    <section class="auth-panel accounts-panel" aria-labelledby="accounts-heading">
+        <p class="eyebrow">{% block eyebrow %}UM PASSO DE CADA VEZ{% endblock %}</p>
+        <h2 id="accounts-heading">{% block heading %}{% endblock %}</h2>
+        {% block account_content %}{% endblock %}
+    </section>
+</div>
+{% endblock %}

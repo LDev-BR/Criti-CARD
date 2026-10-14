@@ -1,0 +1,20 @@
+{% from 'components/icons.html' import icon %}
+{% macro preference(name, field) %}
+{% set value = values.get(name, field.default) %}
+{% set message = errors.get(name) %}
+{% if name == 'color_scheme' %}
+<fieldset class="settings-theme-field"><legend>{{ field.label }}</legend><p id="{{ name }}-help" class="muted">{{ field.help }}</p><div class="settings-theme-options">{% for option, label in field.choices.items() %}<label class="settings-theme-choice"><input type="radio" name="{{ name }}" value="{{ option }}" {% if value == option %}checked{% endif %} required aria-describedby="{{ name }}-help"><span class="settings-theme-swatch" data-preview-theme="{{ option }}"><span></span><span></span><span></span></span><span>{{ label }} {{ icon('check') }}</span></label>{% endfor %}</div>{% if message %}<p class="field-error" role="alert">{{ message }}</p>{% endif %}</fieldset>
+{% else %}
+<div class="settings-option {% if field.kind == 'boolean' %}settings-option-switch{% endif %}">
+    <label for="setting-{{ name }}"><strong>{{ field.label }}</strong><span id="{{ name }}-help">{{ field.help }}</span></label>
+    {% if field.kind == 'boolean' %}<input class="settings-switch" type="checkbox" role="switch" id="setting-{{ name }}" name="{{ name }}" value="1" {% if value %}checked{% endif %} aria-describedby="{{ name }}-help{% if message %} {{ name }}-error{% endif %}" aria-invalid="{{ 'true' if message else 'false' }}">
+    {% elif field.kind == 'choice' %}<select id="setting-{{ name }}" name="{{ name }}" aria-describedby="{{ name }}-help{% if message %} {{ name }}-error{% endif %}" aria-invalid="{{ 'true' if message else 'false' }}">{% for option, label in field.choices.items() %}<option value="{{ option }}" {% if value == option %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+    {% else %}<div class="settings-number"><input type="number" id="setting-{{ name }}" name="{{ name }}" min="0" max="100" step="1" value="{{ value }}" required inputmode="numeric" aria-describedby="{{ name }}-help{% if message %} {{ name }}-error{% endif %}" aria-invalid="{{ 'true' if message else 'false' }}"><span>/100</span></div>{% endif %}
+    {% if message %}<p id="{{ name }}-error" class="field-error" role="alert">{{ message }}</p>{% endif %}
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro secret(name, label, id, new=false, error=none) %}
+<div class="field"><label for="{{ id }}">{{ label }}</label><div class="password-control"><input type="password" id="{{ id }}" name="{{ name }}" autocomplete="{{ 'new-password' if new else 'current-password' }}" maxlength="{{ 128 if new else 1024 }}" {% if new %}minlength="8"{% endif %} {% if error %}aria-invalid="true" aria-describedby="{{ id }}-error" autofocus{% endif %} required><button type="button" class="password-toggle" data-password-toggle="{{ id }}" aria-controls="{{ id }}" aria-pressed="false" aria-label="Mostrar senha" hidden><span data-show-password-icon>{{ icon('eye') }}</span><span data-hide-password-icon hidden>{{ icon('eye-off') }}</span><span data-password-label>Mostrar</span></button></div>{% if error %}<small id="{{ id }}-error" class="field-error" role="alert">{{ error }}</small>{% endif %}</div>
+{% endmacro %}

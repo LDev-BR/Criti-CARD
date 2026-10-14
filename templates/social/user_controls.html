@@ -1,0 +1,36 @@
+{% from 'components/icons.html' import icon %}
+<div class="user-social profile-connections" data-social-user="{{ profile.id }}" data-connections-fragment>
+    <div class="profile-stats">
+        {% if usuario_atual and usuario_atual.id == profile.id %}
+        <a href="{{ url_for('people.connections', aba='amigos') }}"><strong>{{ user_social.friend_count }}</strong> amigos</a>
+        <a href="{{ url_for('people.connections', aba='seguidores') }}"><strong data-follower-count>{{ user_social.follower_count }}</strong> seguidores</a>
+        <a href="{{ url_for('people.connections', aba='seguindo') }}"><strong>{{ user_social.following_count }}</strong> seguindo</a>
+        {% else %}
+        <span><strong>{{ user_social.friend_count }}</strong> amigos</span>
+        <span><strong data-follower-count>{{ user_social.follower_count }}</strong> seguidores</span>
+        <span><strong>{{ user_social.following_count }}</strong> seguindo</span>
+        {% endif %}
+    </div>
+    {% if usuario_atual and usuario_atual.id != profile.id %}
+    {% if user_social.friendship.state == 'incoming' %}<p class="friend-request-note">{{ profile.nome }} enviou um convite de amizade para você.</p>{% endif %}
+    <div class="user-social-actions">
+        {% if not user_social.interaction_blocked %}{% with person=profile, friendship=user_social.friendship, connection_context='profile' %}{% include 'social/friendship_actions.html' %}{% endwith %}{% endif %}
+        <form method="post" action="{{ url_for('people.follow', user_id=profile.id) }}" data-connection-form="follow">
+            {% include 'components/csrf.html' %}<input type="hidden" name="following" value="{{ 'false' if user_social.following else 'true' }}">
+            <input type="hidden" name="context" value="profile">
+            <button type="submit" class="button secondary" data-follow-button aria-pressed="{{ 'true' if user_social.following else 'false' }}" aria-label="{{ 'Deixar de seguir' if user_social.following else 'Seguir' }}" {% if user_social.interaction_blocked %}disabled{% endif %}>{{ icon('check' if user_social.following else 'user-plus') }}<span data-follow-label>{{ 'Seguindo' if user_social.following else 'Seguir' }}</span></button>
+        </form>
+        <details class="connection-options profile-more" {% if user_social.blocked %}open{% endif %}>
+            <summary role="button" aria-label="Mais opções do perfil de @{{ profile.username }}">{{ icon('menu') }} Mais opções</summary>
+            <div class="connection-menu">
+                <form method="post" action="{{ url_for('social.block', user_id=profile.id) }}" data-social-form="block">
+                    {% include 'components/csrf.html' %}<input type="hidden" name="blocked" value="{{ 'false' if user_social.blocked else 'true' }}">
+                    <button type="submit" class="social-button" data-block-button>{{ icon('shield') }}<span data-block-label>{{ 'Desbloquear' if user_social.blocked else 'Bloquear' }}</span></button>
+                </form>
+                <a class="social-link" href="{{ url_for('social.report', target_type='user', target_id=profile.id) }}">{{ icon('shield') }} Denunciar perfil</a>
+            </div>
+        </details>
+    </div>
+    <p class="social-status" data-social-status role="status" hidden></p>
+    {% endif %}
+</div>

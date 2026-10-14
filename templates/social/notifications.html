@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% block title %}Notificações · Criti-CARD{% endblock %}
+{% block content %}
+<section class="social-page notification-center" data-notification-center data-live-search="notifications">
+    {% include 'components/live_search_feedback.html' %}
+    <div data-live-body>
+    <header class="notification-heading">
+        <div><p class="eyebrow">SUA COMUNIDADE, MAIS PERTO</p><h1>Notificações</h1><p class="muted"><span data-unread-count>{{ unread_count }}</span> {{ 'não lida' if unread_count == 1 else 'não lidas' }} · As novidades que conectam você.</p></div>
+        <a class="button secondary small" href="{{ url_for('settings.index', secao='notificacoes') }}">{{ icon('sliders') }} Preferências</a>
+    </header>
+    <div class="notification-toolbar">
+        <form class="notification-filters" method="get" action="{{ url_for('social.notifications') }}">
+            <div><label for="notification-state">Leitura</label><select name="state" id="notification-state">{% for value,label in states.items() %}<option value="{{ value }}" {% if filters.state == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+            <div><label for="notification-kind">Tipo de novidade</label><select name="kind" id="notification-kind"><option value="all">Todos os tipos</option>{% for value,meta in kinds.items() %}<option value="{{ value }}" {% if filters.kind == value %}selected{% endif %}>{{ meta[0] }}</option>{% endfor %}</select></div>
+            <button class="button secondary small" type="submit">{{ icon('sliders') }} Filtrar</button>
+        </form>
+        <form class="notification-all" method="post" action="{{ url_for('social.read_all_notifications') }}" data-notification-action="read-all" data-social-form="read-all">
+            {% include 'components/csrf.html' %}<input type="hidden" name="state" value="{{ filters.state }}"><input type="hidden" name="kind" value="{{ filters.kind }}">
+            <button class="button secondary small" type="submit" {% if not unread_count %}disabled{% endif %}>{{ icon('check') }} Marcar todas como lidas</button>
+        </form>
+    </div>
+    <p class="notification-results muted" tabindex="-1" data-live-results-heading data-live-count="{{ total }}">{{ total }} {{ 'notificação' if total == 1 else 'notificações' }}{{ ' neste filtro' if filters.state != 'all' or filters.kind != 'all' else '' }}</p>
+    <div class="notification-list" data-notification-list>
+    {% for notification in notifications %}
+        <article class="social-notification notification-row {{ 'is-unread' if not notification.read_at }}" data-notification-id="{{ notification.id }}">
+            <div class="notification-avatar"><img src="{{ image_url('avatar', notification.actor_image) }}" alt="" loading="lazy"><span class="notification-kind-icon">{{ icon(notification.icon) }}</span></div>
+            <div class="notification-body">
+                <div class="notification-meta"><span>{{ notification.kind_name }}</span><span class="notification-read-label">{{ 'Não lida' if not notification.read_at else 'Lida' }}</span></div>
+                <p>{% if notification.actor_username and notification.actor_active %}<a href="{{ url_for('community.profile', username=notification.actor_username) }}">{{ notification.actor_name or notification.actor_username }}</a>{% else %}<strong>Uma conta indisponível</strong>{% endif %} {{ notification.verb }}{% if notification.card_title %}: <strong>{{ notification.card_title }}</strong>{% endif %}.</p>
+                <time datetime="{{ notification.created_at.isoformat() }}" data-notification-time>{{ notification.created_at.strftime('%d/%m/%Y %H:%M') }} UTC</time>
+                <div class="notification-actions">
+                    {% if notification.target_url %}<form method="post" action="{{ url_for('social.open_notification', notification_id=notification.id) }}">{% include 'components/csrf.html' %}<button class="notification-open" type="submit">{{ notification.target_label }} {{ icon('arrow-up-right') }}</button></form>{% endif %}
+                    {% if not notification.read_at %}<form method="post" action="{{ url_for('social.read_notification', notification_id=notification.id) }}" data-notification-action="read" data-social-form="read">
+                        {% include 'components/csrf.html' %}<input type="hidden" name="state" value="{{ filters.state }}"><input type="hidden" name="kind" value="{{ filters.kind }}"><button class="notification-read" type="submit">{{ icon('check') }} Marcar como lida</button>
+                    </form>{% endif %}
+                </div>
+            </div>
+        </article>
+    {% else %}<div class="notification-empty" data-notification-empty>{{ icon('bell') }}<h2>{{ 'Tudo em dia.' if filters.state == 'unread' else 'Um espaço para boas novidades.' }}</h2><p class="muted">{{ 'Nenhuma notificação não lida corresponde a este filtro.' if filters.state == 'unread' else 'Curtidas, comentários e conexões vão aparecer aqui.' }}</p>{% if filters.state != 'all' or filters.kind != 'all' %}<a class="button secondary small" href="{{ url_for('social.notifications') }}" data-live-reset>{{ icon('reset') }} Ver todas</a>{% else %}<a class="button secondary small" href="{{ url_for('discovery.index') }}">{{ icon('compass') }} Descobrir</a>{% endif %}</div>{% endfor %}
+    </div>
+    {% if pages > 1 %}<nav class="pagination" aria-label="Páginas de notificações">{% if page > 1 %}<a href="{{ url_for('social.notifications', page=page-1, **filters) }}">{{ icon('chevron-left') }} Anterior</a>{% endif %}<span>{{ page }} de {{ pages }}</span>{% if page < pages %}<a href="{{ url_for('social.notifications', page=page+1, **filters) }}">Próxima {{ icon('chevron-right') }}</a>{% endif %}</nav>{% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,90 @@
+.community-intro { margin: 4px 0 36px; }
+.community-intro h1 { font-size: clamp(40px, 4.3vw, 62px); line-height: 1.06; color: var(--gold-light); letter-spacing: -.025em; margin-bottom: 12px; }
+.intro-bottom { display: flex; align-items: center; justify-content: space-between; gap: 30px; }
+.intro-bottom > p { font: 500 30px/1.2 var(--font-display); color: #aaa9b3; }
+form.search-form { display: flex; align-items: center; width: min(100%, 380px); gap: 0; border: 1px solid #3a3b45; border-radius: 6px; background: #101115; position: relative; }
+.search-form > .icon { margin-left: 16px; width: 20px; height: 20px; color: var(--muted); flex: none; }
+.search-form input { border: 0; background: transparent; padding: 14px 12px; font-size: 12px; }
+.search-form input:focus-visible { outline-offset: -4px; }
+.search-form .search-submit { background: transparent; border: 0; color: var(--gold); padding: 14px; cursor: pointer; }
+.search-submit:hover { color: var(--gold-light); }
+.search-submit .icon { width: 16px; }
+.feed-heading { margin: 28px 0 20px; padding-top: 22px; border-top: 1px solid var(--line); }
+.feed-heading h2 { font: 500 13px var(--font-body); color: var(--muted); }
+.feed-heading .muted { color: var(--gold); font-size: 11px; margin-left: 7px; }
+.collection-note { font-size: 11px; color: #81838e; }
+.pagination { justify-content: center; margin: 36px 0; font-size: 12px; }
+.community-filters { border: 1px solid var(--line); border-radius: 8px; padding: 20px; background: linear-gradient(130deg, #191b21, #13151a); }
+.category-tabs { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 18px; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
+.category-tab { display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent; border-radius: 5px; padding: 8px 12px; min-height: 38px; font-size: 11px; color: var(--muted); }
+.category-tab .icon { width: 16px; height: 16px; }
+.category-tab:hover { color: var(--text); background: #ffffff05; }
+.category-tab[aria-current=true] { background: var(--gold-wash); border-color: var(--gold-border); color: var(--gold-light); }
+form.feed-filter-form { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(95px, .55fr) minmax(0, 1fr) auto; gap: 16px; align-items: end; }
+.filter-field { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.filter-field > label { font-size: 10px; color: #bdbcc7; font-weight: 500; margin: 0; display: flex; align-items: center; gap: 7px; }
+.filter-field > label .icon { width: 13px; height: 13px; }
+.filter-field select, .filter-field input { width: 100%; min-width: 0; border: 1px solid #383a44; border-radius: 5px; background: #0f1014; color: var(--text); min-height: 44px; padding: 11px 12px; font: 12px var(--font-body); }
+.filter-field select:focus { border-color: var(--gold-border); }
+.filter-number { position: relative; }
+.filter-number input { padding-right: 42px; }
+.filter-number > span { position: absolute; right: 12px; top: 13px; color: var(--muted); font-size: 10px; pointer-events: none; }
+.filter-number input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.filter-apply { min-height: 44px; font-size: 11px; padding: 10px 14px; white-space: nowrap; }
+.filter-apply .icon { width: 16px; height: 16px; }
+.filter-summary { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+.filter-tags { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; flex: 1; }
+.filter-tags > a { display: inline-flex; align-items: center; gap: 8px; color: #d8c8ac; background: #c5a46d0c; border: 1px solid #5d503c; border-radius: 4px; padding: 5px 9px; font-size: 10px; max-width: 100%; overflow-wrap: anywhere; }
+.filter-tags .icon { width: 12px; height: 12px; }
+.clear-filters { display: inline-flex; align-items: center; gap: 7px; color: var(--muted); font-size: 10px; min-height: 32px; white-space: nowrap; }
+.clear-filters:hover { color: var(--gold-light); }
+.clear-filters .icon { width: 14px; height: 14px; }
+@media (max-width: 1000px) {
+    form.feed-filter-form { grid-template-columns: minmax(0, 1fr) 120px minmax(0, 1fr); }
+    .filter-apply { grid-column: 1 / -1; justify-self: end; }
+}
+@media (max-width: 700px) {
+    .community-intro { margin-bottom: 28px; }
+    .community-intro h1 { font-size: 42px; line-height: 1.05; max-width: 480px; }
+    .intro-bottom { flex-direction: column; align-items: stretch; gap: 22px; }
+    .intro-bottom > p { font-size: 25px; }
+    form.search-form { width: 100%; }
+    .collection-note { display: none; }
+    .community-filters { padding: 16px; }
+    .category-tabs { gap: 6px; margin-bottom: 16px; padding-bottom: 16px; }
+    .category-tab { padding: 8px 10px; font-size: 11px; }
+    form.feed-filter-form { grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); gap: 14px; }
+    .filter-work { grid-column: 1 / -1; }
+    .filter-field select, .filter-field input { font-size: 16px; }
+    .filter-apply { width: 100%; font-size: 12px; }
+}
+@media (max-width: 380px) {
+    form.feed-filter-form { grid-template-columns: minmax(0, 1fr); }
+}
+
+.community-intro { margin-block: 0 18px; }
+.community-intro h1 { font-size: clamp(34px, 3.8vw, 52px); margin-bottom: 8px; }
+.intro-bottom { gap: 16px; }
+.intro-bottom > p { font-size: 26px; }
+.feed-tabs { margin-bottom: 14px; gap: 8px; }
+.feed-tabs a { min-height: 44px; }
+.community-filters { padding: 14px; }
+.category-tabs { padding-bottom: 12px; margin-bottom: 12px; gap: 4px; }
+.category-tab { min-height: 44px; font-size: 12px; padding-inline: 10px; }
+.feed-heading { margin-block: 18px 14px; padding-top: 14px; }
+.collection-note { color: var(--muted); }
+.filter-field > label { font-size: 12px; }
+.filter-summary { margin-top: 12px; padding-top: 10px; }
+.filter-tags > a, .clear-filters { min-height: 44px; font-size: 12px; }
+@media (max-width: 850px) {
+    .community-intro h1 { font-size: 36px; }
+    .intro-bottom { align-items: stretch; flex-direction: column; gap: 12px; }
+    .intro-bottom > p { font-size: 23px; }
+    form.search-form { width: 100%; }
+    .search-form input { font-size: 16px; min-height: 44px; padding-block: 10px; }
+    .search-submit { min-width: 44px; min-height: 44px; }
+    .community-filters { padding: 4px 8px; }
+    .filter-disclosure[open] { padding-bottom: 8px; }
+    .feed-heading { margin-top: 16px; }
+    .filter-field select, .filter-field input { font-size: 16px; }
+}

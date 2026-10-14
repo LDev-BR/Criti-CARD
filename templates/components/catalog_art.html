@@ -1,0 +1,5 @@
+{% macro catalog_art(cover_url, art=none, title='', class_name='', loading='lazy', width=280, height=160) -%}
+<span class="catalog-art {{ class_name }}{% if art %} catalog-art--atlas catalog-art--col-{{ art.column }} catalog-art--row-{{ art.row }}{% endif %}"{% if art %} data-catalog-art="{{ art.marker }}" title="{{ art.label }}"{% endif %}>
+    {% if art %}<span class="catalog-art-frame">{% endif %}<img src="{{ url_for('static', filename=art.filename) if art else cover_url }}" class="catalog-art-image" alt="{{ art.label if art else '' }}" loading="{{ loading }}" width="{{ width }}" height="{{ height }}">{% if art %}</span>{% endif %}
+</span>
+{%- endmacro %}

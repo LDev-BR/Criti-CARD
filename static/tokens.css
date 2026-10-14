@@ -1,0 +1,17 @@
+@font-face { font-family: 'Cormorant Garamond'; src: url('fonts/CormorantGaramond-Variable.ttf') format('truetype'); font-weight: 300 700; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Manrope'; src: url('fonts/Manrope-Variable.ttf') format('truetype'); font-weight: 200 800; font-style: normal; font-display: swap; }
+:root {
+    color-scheme: dark;
+    --bg: #0c0d10; --panel: #15171c; --panel-raised: #1b1d23;
+    --text: #eeeae3; --muted: #a2a3ac; --line: #303139;
+    --gold: #c5a46d; --gold-light: #f0d9a1; --bronze: #7c633b;
+    --gold-border: #766244; --gold-wash: rgb(197 164 109 / 9%);
+    --gold-metal: linear-gradient(125deg, #a88953 0%, #e9c98c 32%, #f0d9a1 49%, #bd995d 76%, #d8b77a 100%);
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Manrope', system-ui, sans-serif;
+    --radius: 7px; --card-height: 510px; --cover-height: 224px;
+    --ease-out: cubic-bezier(.22,.61,.36,1);
+    --motion-fast: 140ms var(--ease-out);
+    --motion: 220ms var(--ease-out);
+    --motion-enter: 420ms var(--ease-out);
+}

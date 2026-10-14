@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% from 'components/reward_avatar.html' import reward_avatar %}
+{% from 'components/progression_badge.html' import progression_badge %}
+{% block title %}{{ profile.nome }} · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='community.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='profiles.css') }}">{% endblock %}
+{% block content %}
+<section class="profile-summary">
+    {{ reward_avatar(image_url('avatar',profile.imagem),profile_style,'Foto de '+profile.nome) }}
+    <div><p class="eyebrow">@{{ profile.username }}</p><h1>{{ profile.nome }}</h1><p class="muted">{{ profile.apelido }}</p>{{ progression_badge(profile_style) }}</div>
+    {% if usuario_atual and usuario_atual.id == profile.id %}<a class="button secondary" href="{{ url_for('profiles.edit') }}">{% include 'icons/edit.svg' %} Editar perfil</a>{% endif %}
+</section>
+{% with bio=profile.about %}{% include 'components/profile_bio.html' %}{% endwith %}
+{% include 'social/user_controls.html' %}
+<p class="connections-feedback" data-connections-status role="status" hidden></p>
+<div class="profile-links">
+    <a class="button secondary small" href="{{ url_for('backlog.collection', username=profile.username) }}">{% include 'icons/layers.svg' %} Coleção de obras</a>
+    {% if usuario_atual and usuario_atual.id != profile.id and not user_social.interaction_blocked %}
+    <form class="inline-form" action="{{ url_for('chat.start') }}" method="post">{% include 'components/csrf.html' %}<input type="hidden" name="target_id" value="{{ profile.id }}"><button class="button small" type="submit">{% include 'icons/send.svg' %} Enviar mensagem</button></form>
+    {% endif %}
+</div>
+{% if user_social.interaction_blocked %}<p class="muted">As interações e críticas deste perfil estão ocultas por um bloqueio.</p>{% endif %}
+<div class="section-heading"><h2>Críticas de @{{ profile.username }} <span class="muted">({{ cards.total }})</span></h2></div>
+<section class="card-grid" aria-label="Cards de {{ profile.nome }}">
+    {% for c in cards.items %}{% include 'components/card.html' %}
+    {% else %}<div class="empty-state"><h3>{{ 'Críticas ocultas' if user_social.interaction_blocked else 'As primeiras críticas vêm aí' }}</h3><p class="muted">{{ 'Você pode gerenciar o bloqueio acima.' if user_social.blocked else 'Nenhum card disponível neste perfil.' }}</p></div>{% endfor %}
+</section>
+{% include 'components/pagination.html' %}
+{% endblock %}

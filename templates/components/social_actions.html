@@ -1,0 +1,17 @@
+{% set state = social_state if social_state is defined else {'liked': false, 'like_count': 0, 'comment_count': 0} %}
+<div class="social-actions{% if compact %} social-actions-compact{% endif %}" data-social-card="{{ c.id }}">
+    {% if usuario_atual %}
+    <form method="post" action="{{ url_for('social.like', card_id=c.id) }}" data-social-form="like">
+        {% include 'components/csrf.html' %}
+        <input type="hidden" name="liked" value="{{ 'false' if state.liked else 'true' }}">
+        <button type="submit" class="social-button" aria-pressed="{{ 'true' if state.liked else 'false' }}" aria-label="{{ 'Descurtir' if state.liked else 'Curtir' }} card">
+            {% include 'icons/heart.svg' %} {% if not compact %}<span data-like-label>{{ 'Curtido' if state.liked else 'Curtir' }}</span>{% endif %} <span data-like-count>{{ state.like_count }}</span>
+        </button>
+    </form>
+    {% else %}
+    <a class="social-button" href="{{ url_for('auth.index') }}" aria-label="Entre para curtir">{% include 'icons/heart.svg' %} <span>{{ state.like_count }}{% if not compact %} curtidas{% endif %}</span></a>
+    {% endif %}
+    <a class="social-button" href="{{ url_for('cards.detail', id=c.id) }}#comments" aria-label="Comentários da crítica">{% include 'icons/message.svg' %}<span data-comment-count>{{ state.comment_count }}</span>{% if not compact %} comentários{% endif %}</a>
+    {% if usuario_atual and not compact %}<a class="social-link" href="{{ url_for('social.report', target_type='card', target_id=c.id) }}">Denunciar</a>{% endif %}
+    <p class="social-status" data-social-status role="status" hidden></p>
+</div>

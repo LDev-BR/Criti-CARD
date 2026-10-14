@@ -1,0 +1,12 @@
+.accounts-layout { max-width: 1040px; margin: 60px auto 90px; display: grid; grid-template-columns: 1fr 1.1fr; align-items: center; gap: 72px; }
+.accounts-intro .eyebrow { font-size: 9px; letter-spacing: .16em; margin-bottom: 20px; }
+.accounts-intro h1 { font-size: clamp(42px, 4.8vw, 64px); line-height: 1.02; }
+.accounts-intro h1 em { color: var(--gold-light); font-weight: 500; }
+.accounts-intro .muted { font-size: 12px; line-height: 1.9; max-width: 340px; margin-top: 24px; }
+.accounts-intro .back-link { margin-top: 32px; font-size: 11px; }
+.accounts-panel h2 { font-size: 35px; }
+.accounts-notice { margin-top: 24px; padding: 15px 18px; border: 1px solid var(--gold-border); border-radius: 5px; background: var(--gold-wash); color: var(--gold-light); font-size: 12px; line-height: 1.85; }
+.accounts-primary-link { width: 100%; margin-top: 26px; font-size: 12px; min-height: 48px; }
+.accounts-panel .enhanced-form:not([data-validate]) { margin-top: 26px; }
+@media (max-width: 850px) { .accounts-layout { grid-template-columns: 1fr; max-width: 530px; gap: 26px; margin-top: 28px; } .accounts-intro h1 { font-size: 42px; } .accounts-intro .muted { max-width: 450px; } .accounts-intro .back-link { margin-top: 20px; margin-bottom: 0; } }
+@media (max-width: 480px) { .accounts-panel { padding: 26px 22px; } .accounts-panel h2 { font-size: 31px; } .accounts-intro h1 { font-size: 38px; } }

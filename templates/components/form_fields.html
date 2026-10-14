@@ -1,0 +1,47 @@
+{% macro attrs(name, help=false) -%}
+aria-describedby="{% if help %}{{ name }}-help {% endif %}{{ name }}-error" aria-invalid="{{ 'true' if (field_errors|default({})).get(name) else 'false' }}"
+{%- endmacro %}
+
+{% macro error(name) -%}
+{% set message = (field_errors|default({})).get(name) %}
+<small id="{{ name }}-error" class="field-error" data-field-error="{{ name }}" aria-live="polite" {% if not message %}hidden{% endif %}>{{ message or '' }}</small>
+{%- endmacro %}
+
+{% macro password(new=false) %}
+<div class="field">
+    <label for="senha">Senha</label>
+    <div class="password-control">
+        <input type="password" id="senha" name="senha" autocomplete="{{ 'new-password' if new else 'current-password' }}" {% if new %}minlength="8" maxlength="128" data-password-rules{% endif %} {{ attrs('senha', new) }} required>
+        <button type="button" class="password-toggle" data-password-toggle="senha" aria-controls="senha" aria-pressed="false" aria-label="Mostrar senha" hidden><span data-show-password-icon>{% include 'icons/eye.svg' %}</span><span data-hide-password-icon hidden>{% include 'icons/eye-off.svg' %}</span><span data-password-label>Mostrar</span></button>
+    </div>
+    {% if new %}
+    <div id="senha-help" class="password-guide">
+        <p class="field-help">Sua senha precisa ter:</p>
+        <ul class="password-rules" data-password-checklist aria-label="Requisitos da senha">
+            <li data-rule="length">8 a 128 caracteres</li>
+            <li data-rule="case">Maiúscula e minúscula</li>
+            <li data-rule="number">Um número</li>
+            <li data-rule="symbol">Um símbolo: !@#$%&amp;_*</li>
+        </ul>
+    </div>
+    {% endif %}
+    <small class="field-help caps-lock" data-caps-lock="senha" role="status" hidden>Caps Lock está ativado.</small>
+    {{ error('senha') }}
+</div>
+{% endmacro %}
+
+{% macro upload(name, label, source, avatar=false, required=false, editing=false) %}
+<div class="field upload-field" data-upload data-crop-ratio="{{ '1' if avatar else '1.5625' }}" data-crop-kind="{{ 'avatar' if avatar else 'capa' }}">
+    <label for="{{ name }}">{{ label }} {% if not required %}<span class="field-optional">Opcional</span>{% endif %}</label>
+    <div class="upload-box {{ 'avatar-upload' if avatar else 'cover-upload' }}">
+        {% if avatar %}<img id="avatar-preview" class="avatar preview" src="{{ source }}" alt="Prévia da foto de perfil">{% endif %}
+        <div class="upload-details">
+            <input type="file" id="{{ name }}" name="{{ name }}" accept="image/png,image/jpeg,image/gif" data-preview="{{ 'avatar-preview' if avatar else 'cover-preview' }}" {{ attrs(name, true) }} {% if required %}required{% endif %}>
+            <span class="field-help" data-upload-status>Escolha uma imagem para {{ 'seu perfil' if avatar else 'a capa do card' }}.</span>
+            <div class="upload-actions"><button type="button" class="button secondary small" data-crop-image hidden>{% include 'icons/crop.svg' %} Recortar {{ 'foto' if avatar else 'capa' }}</button><button type="button" class="text-button upload-reset with-icon" data-upload-reset hidden>{% include 'icons/reset.svg' %} {{ 'Manter imagem atual' if editing else 'Remover seleção' }}</button></div>
+        </div>
+    </div>
+    <small id="{{ name }}-help" class="field-help">PNG, JPG ou GIF · até 3 MB · até 16 megapixels. Você pode recortar após escolher.{% if editing %} Sem novo arquivo, a imagem atual será mantida.{% endif %}</small>
+    {{ error(name) }}
+</div>
+{% endmacro %}

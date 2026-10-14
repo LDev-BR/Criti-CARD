@@ -1,0 +1,27 @@
+{% from 'components/catalog_art.html' import catalog_art %}
+<article class="backlog-item" data-backlog-item="{{ item.id }}">
+    <div class="backlog-work-heading">{{ catalog_art(item.cover_url, item.cover_art, title=item.titulo, width=92, height=120) }}
+        <div><p class="backlog-category">{{ item.category_name }}</p><h3>{{ item.titulo }}</h3><span class="backlog-status" data-status="{{ item.status }}">{{ item.status_label }}</span></div>
+    </div>
+    <div class="backlog-item-meta">
+        {% if item.progress is not none %}<span>{{ item.progress }} {{ units.get(item.progress_unit, 'de progresso') }}</span>{% else %}<span class="muted">No seu ritmo</span>{% endif %}
+        {% if own_collection %}<span class="backlog-visibility">{{ icon('eye') if item.visibility == 'public' else icon('eye-off') }} {{ 'Pública' if item.visibility == 'public' else 'Privada' }}</span>{% endif %}
+    </div>
+    {% if own_collection %}
+    <div class="backlog-item-actions"><a href="{{ url_for('cards.edit_card', id=item.review_card_id) if item.review_card_id else url_for('cards.cadastro_cards', obra_id=item.work_id) }}" class="backlog-review-link">{{ icon('edit') }} {{ 'Editar meu card' if item.review_card_id else 'Escrever crítica' }}</a>
+        <details class="backlog-edit"><summary>{{ icon('sliders') }} Atualizar</summary>
+            <form action="{{ url_for('backlog.update_item', item_id=item.id) }}" method="post" data-backlog-update>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <label for="item-{{ item.id }}-status">Status</label><select id="item-{{ item.id }}-status" name="status">{% for value in statuses %}<option value="{{ value }}" {% if item.status == value %}selected{% endif %}>{{ status_label(value, item.category_slug) }}</option>{% endfor %}</select>
+                <div class="backlog-progress-fields"><div><label for="item-{{ item.id }}-progress">Progresso <span class="muted">(opcional)</span></label><input id="item-{{ item.id }}-progress" name="progress" type="number" min="0" max="100000" step="1" value="{{ item.progress if item.progress is not none else '' }}"></div>
+                    <div><label for="item-{{ item.id }}-unit">Unidade</label><select id="item-{{ item.id }}-unit" name="progress_unit"><option value="">Sem unidade</option>{% for value, label in units.items() %}<option value="{{ value }}" {% if item.progress_unit == value %}selected{% endif %}>{{ label|capitalize }}</option>{% endfor %}</select></div>
+                </div>
+                <label for="item-{{ item.id }}-visibility">Visibilidade desta obra</label><select id="item-{{ item.id }}-visibility" name="visibility"><option value="private" {% if item.visibility == 'private' %}selected{% endif %}>Privada · só você</option><option value="public" {% if item.visibility == 'public' %}selected{% endif %}>Pública · aparece na coleção compartilhada</option></select>
+                <button class="button small" type="submit">{{ icon('check') }} Salvar alterações</button>
+            </form>
+            <form action="{{ url_for('backlog.remove_item', item_id=item.id) }}" method="post" class="backlog-remove" data-backlog-remove>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button type="submit" class="text-button danger-link">{{ icon('trash') }} Remover da coleção</button>
+            </form>
+        </details>
+    </div>{% endif %}
+</article>

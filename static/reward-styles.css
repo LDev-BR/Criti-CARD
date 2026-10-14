@@ -1,0 +1,23 @@
+/* Allowlisted attributes decorate existing boxes without changing their size. */
+[data-card-style], .reward-avatar { --reward-edge: var(--gold-border); --reward-glow: transparent; }
+:is([data-card-style=card_slate],[data-avatar-style=frame_slate]) { --reward-edge: #8e9ba9; --reward-glow: #354353; }
+:is([data-card-style=card_bronze],[data-avatar-style=frame_bronze]) { --reward-edge: #bd8d5c; --reward-glow: #493623; }
+:is([data-card-style=card_copper],[data-avatar-style=frame_copper]) { --reward-edge: #d39178; --reward-glow: #53362c; }
+:is([data-card-style=card_silver],[data-avatar-style=frame_silver]) { --reward-edge: #c3cbd4; --reward-glow: #414a56; }
+:is([data-card-style=card_sapphire],[data-avatar-style=frame_sapphire]) { --reward-edge: #81a9ed; --reward-glow: #243b61; }
+:is([data-card-style=card_gold],[data-avatar-style=frame_gold]) { --reward-edge: #e7c88b; --reward-glow: #57442b; }
+:is([data-card-style=card_platinum],[data-avatar-style=frame_platinum]) { --reward-edge: #bddeed; --reward-glow: #324b59; }
+:is([data-card-style=card_obsidian],[data-avatar-style=frame_obsidian]) { --reward-edge: #aaa1c9; --reward-glow: #393345; }
+:is([data-card-style=card_obsidian_gold],[data-avatar-style=frame_obsidian_gold]) { --reward-edge: #f0d9a1; --reward-glow: #69502a; }
+[data-avatar-style=frame_aurora] { --reward-edge: #a4d8c9; --reward-glow: #324d4b; }
+[data-avatar-style=frame_heritage] { --reward-edge: #e5b387; --reward-glow: #584630; }
+[data-card-style]:not([data-card-style=card_classic]) { border-color: var(--reward-edge); box-shadow: inset 0 0 0 1px var(--reward-edge), 0 8px 28px rgb(0 0 0 / 22%); }
+[data-card-style]:not([data-card-style=card_classic]) :is(.card-footer,.draft-footer) { background: linear-gradient(100deg,var(--reward-glow),transparent); }
+.reward-avatar { display: inline-flex; position: relative; flex: none; border-radius: 50%; vertical-align: middle; }
+.reward-avatar img { display: block; }
+.reward-avatar:not([data-avatar-style=frame_classic]) { box-shadow: 0 0 0 2px var(--reward-edge), 0 0 0 5px var(--reward-glow); }
+.card-author > .reward-avatar { overflow: visible; max-width: none; }
+.progression-badge { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 7px; color: var(--gold-light); font-size: 12px; }
+.equipped-badge { display: inline-block; font-size: 11px; color: var(--gold-light); border: 1px solid var(--gold-border); border-radius: 4px; padding: 4px 7px; max-width: 100%; overflow-wrap: anywhere; }
+:root[data-high-contrast=true] [data-card-style] { border-color: var(--line); }
+:root[data-high-contrast=true] .reward-avatar { --reward-edge: #fffdfa; }

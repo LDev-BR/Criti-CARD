@@ -1,0 +1,3 @@
+{% if bio|length > 180 %}
+<details class="profile-about"><summary>Sobre o perfil {% include 'icons/chevron-down.svg' %}</summary><p class="profile-bio preserve-lines">{{ bio }}</p></details>
+{% elif bio %}<p class="profile-bio preserve-lines">{{ bio }}</p>{% endif %}

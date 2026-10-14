@@ -1,0 +1,29 @@
+{% from 'components/icons.html' import icon, category_icons %}
+<section class="community-filters" id="community-filters" aria-label="Filtros da comunidade">
+    <details class="filter-disclosure" data-responsive-disclosure {% if filters.active %}open data-keep-open{% endif %}>
+    <summary>{{ icon('sliders') }}<span>Filtros e categorias{% if filters.active %} · aplicados{% endif %}</span>{{ icon('chevron-down') }}</summary>
+    <nav class="category-tabs" aria-label="Filtrar por categoria">
+        <a class="category-tab" href="{{ url_for('community.feed', **filters.url_args(categoria=None, obra=None)) }}" {% if not filters.category %}aria-current="true"{% endif %}>{{ icon('layers') }} Todas</a>
+        {% for category in catalog %}<a class="category-tab" href="{{ url_for('community.feed', **filters.url_args(categoria=category.slug, obra=None)) }}" {% if filters.category == category.slug %}aria-current="true"{% endif %}>{{ icon(category_icons.get(category.slug, 'layers')) }} {{ category.nome }}</a>{% endfor %}
+    </nav>
+    <form method="get" action="{{ url_for('community.feed') }}" class="feed-filter-form">
+        {% if filters.ignore_preferences %}<input type="hidden" name="preferencias" value="ignorar">{% endif %}
+        {% if filters.feed == 'following' %}<input type="hidden" name="feed" value="following">{% endif %}
+        {% if query %}<input type="hidden" name="q" value="{{ query }}">{% endif %}
+        {% if filters.category %}<input type="hidden" name="categoria" value="{{ filters.category }}">{% endif %}
+        <div class="filter-field filter-work"><label for="filter-work">Obra</label><select id="filter-work" name="obra"><option value="">Todas as obras</option>{% for category in catalog if not filters.category or filters.category == category.slug %}<optgroup label="{{ category.nome }}">{% for work in category.works %}<option value="{{ work.id }}" {% if filters.work == work.id %}selected{% endif %}>{{ work.titulo }}</option>{% endfor %}</optgroup>{% endfor %}</select></div>
+        <div class="filter-field filter-minimum"><label for="filter-minimum">Nota mínima</label><div class="filter-number"><input type="number" id="filter-minimum" name="nota_min" min="0" max="100" step="1" inputmode="numeric" value="{{ filters.minimum }}"><span aria-hidden="true">/100</span></div></div>
+        <div class="filter-field filter-sort"><label for="filter-sort">{{ icon('sort') }} Ordenar por</label><select id="filter-sort" name="ordem">{% for value, choice in sort_options.items() %}<option value="{{ value }}" {% if filters.sort == value %}selected{% endif %}>{{ choice[0] }}</option>{% endfor %}</select></div>
+        <button type="submit" class="button secondary filter-apply">{{ icon('sliders') }} Aplicar filtros</button>
+    </form>
+    {% if filters.active %}
+    <div class="filter-summary"><div class="filter-tags">
+        {% if query %}<a href="{{ url_for('community.feed', **filters.url_args(q=None)) }}" aria-label="Remover busca por {{ query }}">“{{ query }}” {{ icon('close') }}</a>{% endif %}
+        {% for category in catalog if filters.category == category.slug %}<a href="{{ url_for('community.feed', **filters.url_args(categoria=None, obra=None)) }}" aria-label="Remover filtro de categoria {{ category.nome }}">{{ category.nome }} {{ icon('close') }}</a>{% endfor %}
+        {% if filters.work %}{% for category in catalog %}{% for work in category.works if work.id == filters.work %}<a href="{{ url_for('community.feed', **filters.url_args(obra=None)) }}" aria-label="Remover filtro da obra {{ work.titulo }}">{{ work.titulo }} {{ icon('close') }}</a>{% endfor %}{% endfor %}{% endif %}
+        {% if filters.minimum %}<a href="{{ url_for('community.feed', **filters.url_args(nota_min=None)) }}" aria-label="Remover filtro de nota mínima">Nota ≥ {{ filters.minimum }} {{ icon('close') }}</a>{% endif %}
+        {% if filters.sort != 'recent' %}<a href="{{ url_for('community.feed', **filters.url_args(ordem=None)) }}" aria-label="Restaurar ordenação por mais recentes">{{ sort_options[filters.sort][0] }} {{ icon('close') }}</a>{% endif %}
+    </div><a class="clear-filters" data-live-reset href="{{ feed_reset_url }}">{{ icon('reset') }} Limpar filtros</a></div>
+    {% endif %}
+    </details>
+</section>

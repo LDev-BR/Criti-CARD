@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% block title %}Feed de críticas · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='community.css') }}">{% endblock %}
+{% block content %}
+<div data-live-search="feed">
+{% include 'components/live_search_feedback.html' %}
+<div data-live-body>
+<section class="community-intro">
+    <h1>Críticas que abrem novas perspectivas.</h1>
+    <div class="intro-bottom">
+        <p>Leia o que a comunidade está pensando.</p>
+        <form action="{{ url_for('community.feed') }}" method="get" class="search-form" role="search">
+            {% for name, value in filters.url_args().items() if name != 'q' %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% endfor %}
+            {% include 'icons/search.svg' %}
+            <label class="visually-hidden" for="q">Buscar título ou autor</label>
+            <input type="search" id="q" name="q" value="{{ query }}" maxlength="120" placeholder="Buscar título ou autor">
+            <button type="submit" class="search-submit" aria-label="Buscar">{% include 'icons/arrow-right.svg' %}</button>
+        </form>
+    </div>
+</section>
+{% if usuario_atual %}<nav class="feed-tabs" aria-label="Escolher feed">
+    <a href="{{ url_for('community.feed', **filters.url_args(feed=None)) }}" {% if filters.feed != 'following' %}aria-current="page"{% endif %}>{{ icon('compass') }} Todas as críticas</a>
+    <a href="{{ url_for('community.feed', **filters.url_args(feed='following')) }}" {% if filters.feed == 'following' %}aria-current="page"{% endif %}>{{ icon('user') }} Seguindo</a>
+</nav>{% endif %}
+{% include 'components/feed_filters.html' %}
+<div class="section-heading feed-heading">
+    <h2 tabindex="-1" data-live-results-heading data-live-count="{{ cards.total }}">{{ 'Resultados da busca' if query else ('Sua seleção' if filters.active else ('Críticas de itens que você segue' if filters.feed == 'following' else 'Críticas recentes')) }} <span class="muted">({{ cards.total }})</span></h2>
+    <span class="collection-note">{{ sort_options[filters.sort][0] }}</span>
+</div>
+<section class="card-grid" aria-label="Cards da comunidade">
+    {% for c in cards.items %}{% include 'components/card.html' %}
+    {% else %}
+        <div class="empty-state"><h3>{{ 'Nenhuma crítica encontrada' if filters.active else ('Seu feed Seguindo está vazio' if filters.feed == 'following' else 'As críticas estão começando') }}</h3>
+            <p class="muted">{{ 'Experimente outra obra, reduza a nota mínima ou limpe os filtros.' if filters.active else ('Siga obras, temas no catálogo ou pessoas em seus perfis para ver novas críticas aqui.' if filters.feed == 'following' else 'Seja a primeira pessoa a compartilhar uma crítica.') }}</p>
+            {% if filters.feed == 'following' and not filters.active %}<a class="button secondary small" href="{{ url_for('backlog.catalog') }}">Explorar o catálogo</a>{% endif %}
+            {% if filters.active %}<a class="button secondary small" href="{{ feed_reset_url }}">{{ icon('reset') }} Limpar filtros</a>{% else %}<a class="button secondary small" href="{{ url_for('cards.cadastro_cards') if usuario_atual else url_for('auth.cadastro') }}">{{ icon('plus') }} {{ 'Criar um card' if usuario_atual else 'Criar uma conta' }}</a>{% endif %}
+        </div>
+    {% endfor %}
+</section>
+{% include 'components/pagination.html' %}
+</div></div>
+{% endblock %}

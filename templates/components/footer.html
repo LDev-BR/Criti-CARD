@@ -1,0 +1,15 @@
+{% from 'components/icons.html' import icon, category_icons %}
+<footer class="site-footer">
+    <div class="footer-main">
+        <div class="footer-brand"><a class="brand" href="{{ url_for('discovery.index') }}">Criti<span>-CARD</span></a><p>Guarde impressões. Descubra perspectivas.</p><a class="footer-explore" href="{{ url_for('discovery.index') }}">Explore o Criti-CARD {{ icon('arrow-right') }}</a></div>
+        <details class="footer-column"><summary>Explore seus interesses {{ icon('chevron-down') }}</summary><nav class="footer-categories" aria-label="Categorias da comunidade">{% for category in navigation_categories %}<a href="{{ url_for('community.feed', categoria=category.slug) }}">{{ icon(category_icons.get(category.slug, 'layers')) }} {{ category.nome }}</a>{% endfor %}</nav></details>
+        <details class="footer-column"><summary>Sua coleção {{ icon('chevron-down') }}</summary><nav class="footer-links" aria-label="Atalhos da conta">
+            <a href="{{ url_for('backlog.catalog') }}">{{ icon('book') }} Catálogo de obras</a>
+            {% if usuario_atual %}<a href="{{ url_for('people.connections') }}">{{ icon('users') }} Amigos e conexões</a>{% endif %}
+            {% if usuario_atual %}<a href="{{ url_for('backlog.index') }}">{{ icon('layers') }} Meu backlog</a><a href="{{ url_for('chat.index') }}">{{ icon('message') }} Conversas</a><a href="{{ url_for('settings.index') }}">{{ icon('settings') }} Configurações</a>{% endif %}
+            {% if usuario_atual %}<a href="{{ url_for('profiles.dashboard') }}">{{ icon('layers') }} Meus cards</a><a href="{{ url_for('community.profile', username=usuario_atual.username) }}">{{ icon('user') }} Meu perfil</a><a href="{{ url_for('cards.cadastro_cards') }}">{{ icon('plus') }} Publicar uma crítica</a><a href="{{ url_for('profiles.dashboard') }}#suporte">{{ icon('mail') }} Falar com o suporte</a>
+            {% else %}<a href="{{ url_for('auth.cadastro') }}">{{ icon('user-plus') }} Criar minha conta</a><a href="{{ url_for('auth.index') }}">{{ icon('login') }} Entrar na coleção</a><a href="{{ url_for('discovery.index') }}">{{ icon('compass') }} Conhecer o Criti-CARD</a>{% endif %}
+        </nav></details>
+    </div>
+    <div class="footer-bottom"><span>© {{ current_year }} Criti-CARD</span><a href="{{ url_for('privacy.policy') }}">{{ icon('shield') }} Privacidade e seus dados</a><a href="#main">Voltar ao conteúdo {{ icon('chevron-up') }}</a></div>
+</footer>

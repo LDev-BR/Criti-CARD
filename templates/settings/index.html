@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% block title %}Configurações · Criti-CARD{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='settings.css') }}">
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='settings.js') }}" type="module"></script>{% endblock %}
+{% block content %}
+<section class="settings-page" data-settings-page>
+    <header class="settings-heading"><span class="settings-eyebrow">SEU ESPAÇO, DO SEU JEITO</span><h1>Configurações</h1><p class="muted">Mais conforto para descobrir. Mais controle para compartilhar.</p></header>
+    <div class="settings-layout">
+        <aside class="settings-sidebar">
+            <details class="section-disclosure" data-responsive-disclosure>
+            <summary>{{ icon('settings') }}<span>Áreas · {{ sections[active_section].title }}</span>{{ icon('chevron-down') }}</summary>
+            <a class="settings-identity" href="{{ url_for('community.profile', username=usuario_atual.username) }}"><img src="{{ image_url('avatar', usuario_atual.imagem) }}" alt=""><span><strong>{{ usuario_atual.nome }}</strong><small>@{{ usuario_atual.username }}</small></span></a>
+            <div class="settings-search" data-settings-search-wrap hidden>{{ icon('search') }}<label class="visually-hidden" for="settings-search">Buscar área de configurações</label><input type="search" id="settings-search" placeholder="Encontrar uma opção…" autocomplete="off" maxlength="100" aria-controls="settings-nav"></div>
+            <nav id="settings-nav" class="settings-nav" data-settings-nav aria-label="Áreas de configurações">
+                {% for slug, section in sections.items() %}
+                <a href="{{ url_for('settings.index', secao=slug) }}" {% if slug == active_section %}aria-current="page"{% endif %} data-settings-area data-settings-search="{{ section.title }} {{ section.description }} {% for name in section_fields[slug] %}{{ fields[name].label }} {{ fields[name].help }} {% endfor %}{% if slug == 'conta' %}senha email perfil sessões dados exportar{% endif %}">{{ icon(section.icon) }}<span>{{ section.title }}</span>{{ icon('chevron-right') }}</a>
+                {% endfor %}
+            </nav>
+            <p class="settings-search-status muted" data-settings-search-status role="status" hidden></p>
+            <p class="settings-sidebar-note">{{ icon('shield') }}<span>Suas preferências acompanham sua conta em outros dispositivos.</span></p>
+            </details>
+        </aside>
+        <div class="settings-main">
+            <section class="settings-panel" aria-labelledby="settings-title">
+                <header class="settings-section-heading"><div><span class="settings-section-icon">{{ icon(sections[active_section].icon) }}</span><h2 id="settings-title">{{ sections[active_section].title }}</h2><p class="muted">{{ sections[active_section].description }}</p></div>{% if section_fields[active_section] %}<span class="settings-count">{{ section_fields[active_section]|length }} opções</span>{% endif %}</header>
+                {% if active_section == 'conta' %}{% include 'settings/account.html' %}
+                {% elif active_section == 'bloqueados' %}{% include 'settings/blocked.html' %}
+                {% else %}{% include 'settings/preferences.html' %}{% endif %}
+            </section>
+            <p class="settings-footnote">{{ icon('info') }} {% if active_section == 'privacidade' %}Bloqueios sempre impedem interações nos dois sentidos.{% elif active_section == 'notificacoes' %}Seus avisos anteriores ficam disponíveis. A escolha vale para os próximos eventos.{% elif active_section == 'chat' %}No celular, o botão Enviar mantém o teclado livre para quebrar linhas.{% elif active_section == 'aparencia' %}A prévia é imediata. Salve para usar suas escolhas nas outras páginas.{% elif active_section == 'feed' %}Você pode mudar os filtros do feed a qualquer momento.{% else %}Somente você pode acessar as configurações desta conta.{% endif %}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

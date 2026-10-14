@@ -1,0 +1,7 @@
+{% from 'components/form_fields.html' import attrs, error with context %}
+<div class="field">
+    <label for="username">Username</label>
+    <div class="prefixed-input"><span aria-hidden="true">@</span><input id="username" name="username" value="{{ values.get('username', '') }}" minlength="3" maxlength="15" pattern="[A-Za-z0-9_\-]{3,15}" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="seu_username" {{ attrs('username', true) }} required></div>
+    <small id="username-help" class="field-help">De 3 a 15 letras, números, hífen ou sublinhado. É seu endereço na comunidade.</small>
+    {{ error('username') }}
+</div>

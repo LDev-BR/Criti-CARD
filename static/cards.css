@@ -1,0 +1,92 @@
+.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px; align-items: start; }
+.review-card { height: var(--card-height); min-width: 0; overflow: hidden; border: 1px solid #6b5b42; border-radius: var(--radius); background: linear-gradient(135deg, #17191e, #101115); box-shadow: 0 14px 40px rgb(0 0 0 / 22%), inset 0 0 0 1px rgb(197 164 109 / 3%); display: flex; flex-direction: column; }
+.review-card:hover, .review-card.is-reading { border-color: #c8ad7a; box-shadow: 0 18px 50px rgb(0 0 0 / 35%), 0 0 20px rgb(197 164 109 / 6%); }
+.card-surface { flex: 1; min-height: 0; position: relative; }
+.card-front { height: 100%; display: grid; grid-template-rows: var(--cover-height) minmax(0, 1fr); }
+.card-cover-link { display: block; overflow: hidden; border-bottom: 1px solid #2c2d32; }
+.card-cover { display: block; width: 100%; height: 100%; object-fit: cover; }
+.card-cover-link:focus-visible .card-cover { transform: scale(1.025); }
+.card-content { padding: 18px 22px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.card-content > .read-review { margin-top: auto; flex: none; }
+.card-topline { display: flex; justify-content: space-between; align-items: center; gap: 14px; min-width: 0; min-height: 40px; flex: none; }
+.card-author { display: inline-flex; align-items: center; gap: 10px; color: var(--text); min-width: 0; max-width: calc(100% - 90px); }
+.author-avatar { width: 34px; height: 34px; flex: none; border-radius: 50%; object-fit: cover; border: 1px solid #403c34; }
+.card-author > span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; font-weight: 500; }
+.card-author small { display: block; color: var(--muted); font-size: 10px; line-height: 1.6; font-weight: 400; overflow: hidden; text-overflow: ellipsis; }
+.score { display: inline-flex; gap: 4px; align-items: baseline; color: var(--gold-light); font: 600 43px/1 var(--font-display); white-space: nowrap; flex: none; font-variant-numeric: lining-nums tabular-nums; }
+.score small { color: var(--gold); font: 500 15px/1 var(--font-display); }
+.card-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; font: 600 36px/34px var(--font-display); letter-spacing: -.015em; color: #f0ece4; flex: none; }
+.card-excerpt { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; height: 44px; overflow: hidden; overflow-wrap: anywhere; color: #b5b6c0; font-size: 13px; line-height: 22px; flex: none; }
+.read-review { display: inline-flex; width: fit-content; align-items: center; gap: 12px; color: var(--gold-light); font-size: 12px; }
+.read-review .icon { width: 19px; }
+.card-footer { height: 44px; flex: none; margin: 0 22px; border-top: 1px solid #303035; display: flex; align-items: center; justify-content: space-between; }
+.card-hint { color: #91919b; font-size: 10px; letter-spacing: .015em; }
+.card-category { color: var(--gold); font-size: 9px; letter-spacing: .06em; margin-right: 12px; }
+.owner-actions { display: flex; align-items: center; gap: 24px; }
+.owner-actions > a, .owner-actions button { display: inline-flex; align-items: center; gap: 7px; color: #c5bda9; font-size: 11px; }
+.owner-actions .icon { width: 14px; height: 14px; }
+.owner-actions > a:hover { color: var(--gold-light); }
+.owner-actions button:hover { color: #e4a4a4; }
+.card-actions { display: inline-flex; margin: 0; }
+.card-back { height: 100%; padding: 22px; display: flex; flex-direction: column; gap: 16px; }
+.card-back-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex: none; }
+.reader-label { font: 600 30px/1.1 var(--font-display); color: var(--gold-light); }
+.card-back-heading h3 { font: 500 12px/1.5 var(--font-body); color: var(--muted); margin-top: 7px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.card-back-heading > div { min-width: 0; }
+.icon-button { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 34px; height: 34px; color: var(--gold-light); border: 1px solid var(--gold-border); border-radius: 4px; background: transparent; padding: 0; cursor: pointer; }
+.icon-button:hover:not(:disabled) { background: var(--gold-wash); border-color: var(--gold); }
+.icon-button:disabled { opacity: .25; cursor: default; }
+.card-back-heading > .icon-button { border-color: transparent; color: var(--muted); }
+.card-reader, .dialog-reader { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 16px; }
+.reader-page { white-space: pre-wrap; overflow-wrap: anywhere; flex: 1; min-height: 0; overflow: hidden; padding: 0; margin: 0; color: #c9c9d1; }
+.card-reader-page { font: 400 14px/1.8 var(--font-body); }
+.reader-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: none; padding-top: 14px; border-top: 1px solid var(--line); }
+.reader-pagination > span { font-size: 10px; letter-spacing: .02em; color: var(--muted); }
+.expand-review { width: 100%; padding: 9px 14px; font-size: 12px; flex: none; }
+.expand-review .icon { width: 14px; }
+.dialog-open { overflow: hidden; }
+.review-dialog { width: min(860px, calc(100% - 48px)); height: min(750px, calc(100dvh - 64px)); max-height: none; max-width: none; margin: auto; padding: 32px; background: linear-gradient(135deg, #191b21, #0e0f13); border: 1px solid var(--gold-border); border-radius: 10px; color: var(--text); box-shadow: 0 40px 160px rgb(0 0 0 / 65%); overflow: auto; }
+.review-dialog[open] { display: flex; flex-direction: column; }
+.review-dialog::backdrop { background: rgb(0 0 0 / 78%); backdrop-filter: blur(7px); }
+.dialog-heading { position: relative; display: flex; align-items: center; gap: 22px; flex: none; padding-right: 34px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.dialog-cover { width: 64px; height: 82px; object-fit: cover; border: 1px solid #50422f; border-radius: 4px; flex: none; }
+.dialog-cover.catalog-art { width: 64px; height: 82px; }
+.full-review-cover.catalog-art { height: 340px; }
+.dialog-identity { flex: 1; min-width: 0; }
+.dialog-identity h2 { font-size: 42px; line-height: 1.05; margin-bottom: 8px; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.dialog-identity p { font-size: 12px; }
+.dialog-score { font-size: 46px; }
+.dialog-close { position: absolute; right: -9px; top: -9px; border: 0; color: var(--muted); }
+.dialog-reader { margin-top: 24px; gap: 20px; min-height: 150px; }
+.dialog-reader-page { font: 400 17px/1.95 var(--font-body); color: #d3d2d7; }
+.dialog-reader .reader-pagination { justify-content: center; gap: 40px; padding-top: 20px; }
+.dialog-reader .reader-pagination > span { min-width: 120px; text-align: center; font-size: 11px; }
+@media (max-width: 1050px) { .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) {
+    :root { --card-height: 500px; --cover-height: 216px; }
+    .card-grid { grid-template-columns: 1fr; gap: 24px; }
+    .card-content { padding: 18px 20px; }
+    .card-back { padding: 20px; }
+    .review-dialog { width: calc(100% - 24px); height: calc(100dvh - 40px); padding: 24px 20px; }
+    .dialog-heading { gap: 12px; padding: 0 20px 20px 0; align-items: flex-start; flex-wrap: wrap; }
+    .dialog-cover { width: 48px; height: 64px; }
+    .dialog-cover.catalog-art { width: 48px; height: 64px; }
+    .dialog-identity h2 { font-size: 32px; }
+    .dialog-identity p { font-size: 11px; }
+    .dialog-score { font-size: 32px; margin-left: 60px; }
+    .dialog-reader-page { font-size: 15px; line-height: 1.9; }
+    .dialog-reader .reader-pagination { gap: 22px; }
+}
+@media (max-height: 600px) {
+    .review-dialog { height: calc(100dvh - 24px); padding: 16px 24px; }
+    .dialog-heading { padding: 0 28px 12px 0; gap: 16px; flex-wrap: nowrap; align-items: center; }
+    .dialog-cover { width: 40px; height: 52px; }
+    .dialog-cover.catalog-art { width: 40px; height: 52px; }
+    .dialog-identity h2 { font-size: 30px; -webkit-line-clamp: 1; margin-bottom: 4px; }
+    .dialog-identity p { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dialog-score { font-size: 32px; margin-left: 0; }
+    .dialog-reader { margin-top: 12px; gap: 12px; }
+    .dialog-reader-page { font-size: 15px; line-height: 1.7; }
+    .dialog-reader .reader-pagination { padding-top: 10px; }
+}
+.reader-page.reader-scroll { overflow-y: auto; scrollbar-gutter: stable; }

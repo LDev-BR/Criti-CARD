@@ -1,0 +1,11 @@
+<dialog id="crop-dialog" class="crop-dialog" aria-labelledby="crop-heading" aria-describedby="crop-instructions">
+    <header class="crop-heading"><div><p class="eyebrow">O ENQUADRAMENTO CERTO</p><h2 id="crop-heading">Recorte sua imagem</h2></div><button type="button" class="icon-button" data-crop-cancel aria-label="Cancelar recorte">{% include 'icons/close.svg' %}</button></header>
+    <p id="crop-instructions" class="field-help">Arraste a imagem ou use os controles para escolher o enquadramento.</p>
+    <div class="crop-stage"><canvas data-crop-canvas aria-label="Prévia do recorte" role="img"></canvas></div>
+    <div class="crop-controls">
+        <div class="field"><label for="crop-zoom">Zoom</label><input id="crop-zoom" type="range" min="1" max="3" step="0.01" value="1"><output for="crop-zoom" data-crop-zoom-label>100%</output></div>
+        <div class="field-row"><div class="field"><label for="crop-x">Posição horizontal</label><input id="crop-x" type="range" min="0" max="100" step="1" value="50"></div><div class="field"><label for="crop-y">Posição vertical</label><input id="crop-y" type="range" min="0" max="100" step="1" value="50"></div></div>
+    </div>
+    <p class="field-error" data-crop-error role="alert" hidden></p>
+    <footer class="crop-actions"><button type="button" class="text-button with-icon" data-crop-cancel>{% include 'icons/close.svg' %} Cancelar</button><button type="button" class="button" data-crop-apply>{% include 'icons/check.svg' %} Aplicar recorte</button></footer>
+</dialog>

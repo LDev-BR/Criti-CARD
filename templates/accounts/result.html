@@ -1,0 +1,7 @@
+{% extends 'accounts/layout.html' %}
+{% block title %}Sua conta · Criti-CARD{% endblock %}
+{% block eyebrow %}PRONTO PARA CONTINUAR{% endblock %}
+{% block heading %}Sua próxima história espera{% endblock %}
+{% block account_content %}
+<p class="accounts-notice" role="status">{{ message }}</p><a class="button accounts-primary-link" href="{{ url_for('backlog.index') if usuario_atual else url_for('auth.index') }}">{{ 'Ir à minha coleção' if usuario_atual else 'Entrar na minha conta' }} {% include 'icons/arrow-right.svg' %}</a>
+{% endblock %}

@@ -1,0 +1,87 @@
+name: criticard
+
+x-application: &application
+  image: criticard-mvp:local
+  build: .
+  env_file: .env.production
+  environment:
+    ENVIRONMENT: production
+    DATABASE_URL: ${DATABASE_URL:?Defina DATABASE_URL para PostgreSQL}
+    SECRET_KEY: ${SECRET_KEY:?Defina uma SECRET_KEY própria}
+    SESSION_COOKIE_SECURE: "1"
+    FLASK_DEBUG: "0"
+    ACCOUNT_OUTBOX_PATH: /app/instance/outbox
+    UPLOAD_FOLDER: /app/static/uploads
+    CAPA_FOLDER: /app/static/cards
+    HEALTHCHECK_HOST: ${HEALTHCHECK_HOST:?Defina o host público usado no healthcheck}
+  volumes:
+    - avatars:/app/static/uploads
+    - covers:/app/static/cards
+    - account_outbox:/app/instance/outbox
+  read_only: true
+  tmpfs:
+    - /tmp:size=64m,mode=1777
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+
+services:
+  postgres:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: criticard
+      POSTGRES_USER: criticard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Defina a senha do PostgreSQL}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U criticard -d criticard"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  migrate:
+    <<: *application
+    restart: "no"
+    command: [python, -m, flask, --app, app, db-upgrade]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  app:
+    <<: *application
+    restart: unless-stopped
+    stop_grace_period: 45s
+    expose: ["8000"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import http.client,os; c=http.client.HTTPConnection('127.0.0.1',8000,timeout=4); c.request('GET','/feed',headers={'Host':os.environ['HEALTHCHECK_HOST']}); r=c.getresponse(); assert r.status==200, r.status; c.close()"
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+  mail-worker:
+    <<: *application
+    restart: unless-stopped
+    stop_grace_period: 30s
+    command: [python, -m, criticard.accounts.worker]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  avatars:
+  covers:
+  account_outbox:

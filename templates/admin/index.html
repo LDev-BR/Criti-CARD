@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% block title %}Administração · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">{% endblock %}
+{% block content %}
+<section class="admin-shell">
+    <a class="back-link" href="{{ url_for('profiles.dashboard') }}">{{ icon('chevron-left') }} Meus cards</a>
+    <header class="admin-heading">
+        <div><p class="eyebrow">CUIDE DA COMUNIDADE</p><h1>Administração</h1><p class="muted">Organize o catálogo e acompanhe os pedidos da comunidade.</p></div>
+        <a class="button" href="{{ url_for('admin_catalog.create') }}">{{ icon('plus') }} Cadastrar obra</a>
+    </header>
+    <section class="admin-stats" aria-label="Resumo da administração">
+        <a href="{{ url_for('admin_catalog.index') }}"><strong>{{ stats.active_works }}</strong><span>Obras disponíveis</span></a>
+        <a href="{{ url_for('admin.listar_users') }}"><strong>{{ stats.users }}</strong><span>Usuários</span></a>
+        <a href="{{ url_for('social.moderation') }}"><strong>{{ stats.reports }}</strong><span>Denúncias pendentes</span></a>
+        <a href="{{ url_for('privacy.admin_requests') }}"><strong>{{ stats.privacy_requests }}</strong><span>Pedidos sobre dados em aberto</span></a>
+    </section>
+    <div class="section-heading admin-tools-heading"><h2>Suas ferramentas</h2><span class="muted">Acesso administrativo</span></div>
+    <section class="admin-tools" aria-label="Ferramentas administrativas">
+        <a class="admin-tool admin-tool-catalog" href="{{ url_for('admin_catalog.index') }}">
+            <span class="admin-tool-icon">{{ icon('book') }}</span><div><h3>Gerenciar obras</h3><p>Cadastre títulos, escolha capas e mantenha o catálogo atualizado.</p><span class="admin-tool-meta">{{ stats.active_works }} disponíveis · {{ stats.archived_works }} retiradas</span></div>{{ icon('arrow-up-right') }}
+        </a>
+        <a class="admin-tool" href="{{ url_for('admin.listar_users') }}"><span class="admin-tool-icon">{{ icon('users') }}</span><div><h3>Usuários</h3><p>Consulte os perfis e as contas da comunidade.</p><span class="admin-tool-meta">{{ stats.users }} contas cadastradas</span></div>{{ icon('arrow-up-right') }}</a>
+        <a class="admin-tool" href="{{ url_for('admin.listar_users') }}"><span class="admin-tool-icon">{{ icon('award') }}</span><div><h3>Jornadas e XP</h3><p>Consulte históricos e registre correções por abuso confirmado.</p><span class="admin-tool-meta">Recompensas e permissões independentes</span></div>{{ icon('arrow-up-right') }}</a>
+        <a class="admin-tool" href="{{ url_for('social.moderation') }}"><span class="admin-tool-icon">{{ icon('shield') }}</span><div><h3>Moderação</h3><p>Revise denúncias sobre cards, comentários e perfis.</p><span class="admin-tool-meta">{{ stats.reports }} denúncias pendentes</span></div>{{ icon('arrow-up-right') }}</a>
+        <a class="admin-tool" href="{{ url_for('admin.listar_mensagens') }}"><span class="admin-tool-icon">{{ icon('mail') }}</span><div><h3>Mensagens de suporte</h3><p>Leia as mensagens enviadas pelo formulário de contato.</p><span class="admin-tool-meta">{{ stats.contacts }} mensagens recebidas</span></div>{{ icon('arrow-up-right') }}</a>
+        <a class="admin-tool" href="{{ url_for('privacy.admin_requests') }}"><span class="admin-tool-icon">{{ icon('layers') }}</span><div><h3>Pedidos sobre dados</h3><p>Acompanhe solicitações de privacidade e responda aos usuários.</p><span class="admin-tool-meta">{{ stats.privacy_requests }} pedidos em aberto</span></div>{{ icon('arrow-up-right') }}</a>
+    </section>
+    <p class="admin-footnote">As alterações no catálogo são feitas por administradores. Críticas e coleções permanecem vinculadas às suas obras.</p>
+</section>
+{% endblock %}

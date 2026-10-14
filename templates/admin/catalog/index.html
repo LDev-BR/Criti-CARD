@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon, category_icons %}
+{% from 'components/catalog_art.html' import catalog_art %}
+{% block title %}Gerenciar obras · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">{% endblock %}
+{% block content %}
+<div data-live-search="admin-catalog">
+{% include 'components/live_search_feedback.html' %}
+<div data-live-body>
+<section class="admin-shell">
+    <a class="back-link" href="{{ url_for('admin.index') }}">{{ icon('chevron-left') }} Administração</a>
+    <header class="admin-heading"><div><p class="eyebrow">CATÁLOGO DA COMUNIDADE</p><h1>Gerenciar obras</h1><p class="muted">Títulos e capas que dão forma às críticas da comunidade.</p></div><a class="button" href="{{ url_for('admin_catalog.create') }}">{{ icon('plus') }} Cadastrar obra</a></header>
+    <form class="admin-filters" method="get" action="{{ url_for('admin_catalog.index') }}" role="search" aria-label="Filtrar obras">
+        <div class="field admin-search"><label for="catalog-q">Buscar título</label><div class="admin-search-input">{{ icon('search') }}<input id="catalog-q" type="search" name="q" value="{{ filters.q }}" maxlength="120" placeholder="Qual obra você procura?"></div></div>
+        <div class="field"><label for="catalog-category">Categoria</label><select id="catalog-category" name="categoria"><option value="">Todas as categorias</option>{% for category in categories %}<option value="{{ category.slug }}" {% if filters.categoria == category.slug %}selected{% endif %}>{{ category.nome }}</option>{% endfor %}</select></div>
+        <div class="field"><label for="catalog-status">Disponibilidade</label><select id="catalog-status" name="status"><option value="active" {% if filters.status == 'active' %}selected{% endif %}>Disponíveis</option><option value="archived" {% if filters.status == 'archived' %}selected{% endif %}>Retiradas</option><option value="all" {% if filters.status == 'all' %}selected{% endif %}>Todas as obras</option></select></div>
+        <button class="button secondary" type="submit">Filtrar</button>
+    </form>
+    <div class="admin-results-heading"><h2 tabindex="-1" data-live-results-heading data-live-count="{{ listing.total }}">{{ listing.total }} {{ 'obra encontrada' if listing.total == 1 else 'obras encontradas' }}</h2>{% if filters.q or filters.categoria or filters.status != 'active' %}<a class="admin-clear" href="{{ url_for('admin_catalog.index') }}">{{ icon('reset') }} Limpar filtros</a>{% endif %}</div>
+    {% if filters.status == 'archived' %}<p class="admin-catalog-note">As obras retiradas mantêm suas críticas e coleções. Reative uma obra para disponibilizá-la novamente.</p>{% endif %}
+    {% if listing['items'] %}
+    <div class="admin-list-labels" aria-hidden="true"><span>Obra</span><span>Categoria e status</span><span>Na comunidade</span><span>Ações</span></div>
+    <ul class="admin-work-list" aria-label="Obras encontradas">
+        {% for work in listing['items'] %}<li class="admin-work" data-admin-work="{{ work.id }}">
+            <div class="admin-work-main"><div class="admin-work-cover">{{ catalog_art(work.cover_url, work.cover_art, title=work.titulo, width=144, height=96) }}</div><div><h3>{{ work.titulo }}</h3>{% if work.cover_art %}<p class="admin-work-art-note">Ilustração temática original</p>{% endif %}</div></div>
+            <div class="admin-work-details"><span class="admin-category">{{ icon(category_icons.get(work.category_slug, 'layers')) }} {{ work.category_name }}</span><span class="admin-work-status {% if work.active %}is-active{% endif %}">{{ 'Disponível' if work.active else 'Retirada' }}</span></div>
+            <p class="admin-work-usage"><span>{{ work.card_count }} {{ 'crítica' if work.card_count == 1 else 'críticas' }}</span><span>{{ work.backlog_count }} {{ 'coleção' if work.backlog_count == 1 else 'coleções' }}</span></p>
+            <div class="admin-work-actions"><a class="button secondary small" href="{{ url_for('admin_catalog.edit', work_id=work.id) }}" aria-label="Editar {{ work.titulo }}">{{ icon('edit') }} Editar</a>{% if work.active %}<a class="admin-remove" href="{{ url_for('admin_catalog.delete', work_id=work.id) }}" aria-label="Excluir {{ work.titulo }} do catálogo">{{ icon('trash') }} Excluir</a>{% else %}<form method="post" action="{{ url_for('admin_catalog.restore', work_id=work.id) }}">{% include 'components/csrf.html' %}<button class="button secondary small" type="submit" aria-label="Reativar {{ work.titulo }}">{{ icon('reset') }} Reativar</button></form>{% endif %}</div>
+        </li>{% endfor %}
+    </ul>
+    {% else %}<div class="empty-state"><h3>Nenhuma obra encontrada</h3><p class="muted">Experimente outro título ou ajuste os filtros.</p><a class="button secondary small" href="{{ url_for('admin_catalog.index') }}">{{ icon('reset') }} Limpar filtros</a></div>{% endif %}
+    {% if listing.pages > 1 %}<nav class="admin-pagination" aria-label="Paginação de obras">{% if listing.page > 1 %}<a class="button secondary small" href="{{ url_for('admin_catalog.index', q=filters.q, categoria=filters.categoria, status=filters.status, page=listing.page-1) }}">{{ icon('chevron-left') }} Anterior</a>{% endif %}<span>Página {{ listing.page }} de {{ listing.pages }}</span>{% if listing.page < listing.pages %}<a class="button secondary small" href="{{ url_for('admin_catalog.index', q=filters.q, categoria=filters.categoria, status=filters.status, page=listing.page+1) }}">Próxima {{ icon('chevron-right') }}</a>{% endif %}</nav>{% endif %}
+</section>
+</div></div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% from 'components/icons.html' import icon %}
+<header class="site-header">
+    <div class="header-inner">
+        <a class="brand" href="{{ url_for('discovery.index') }}" aria-label="Criti-CARD · Descobrir">Criti<span>-CARD</span></a>
+        <details class="primary-navigation" data-primary-navigation>
+        <summary class="nav-toggle" data-nav-toggle aria-controls="primary-nav" aria-label="Navegação principal">{{ icon('menu') }}<span>Menu</span></summary>
+        <nav id="primary-nav" class="main-nav" aria-label="Navegação principal">
+            <div class="nav-links">
+                <a class="nav-link" href="{{ url_for('discovery.index') }}" {% if request.endpoint == 'discovery.index' %}aria-current="page"{% endif %}>{{ icon('compass') }} Descobrir</a>
+                <a class="nav-link" href="{{ url_for('community.feed') }}" {% if request.endpoint == 'community.feed' %}aria-current="page"{% endif %}>{{ icon('sparkles') }} Críticas</a>
+                <a class="nav-link" href="{{ url_for('communities.index') }}" {% if request.blueprint == 'communities' %}aria-current="page"{% endif %}>{{ icon('users') }} Comunidades</a>
+                <a class="nav-link" href="{{ url_for('backlog.catalog') }}" {% if request.endpoint == 'backlog.catalog' %}aria-current="page"{% endif %}>{{ icon('book') }} Catálogo</a>
+                {% if usuario_atual %}<a class="nav-link" href="{{ url_for('backlog.index') }}" {% if request.endpoint == 'backlog.index' %}aria-current="page"{% endif %}>{{ icon('layers') }} Meu backlog</a>{% endif %}
+                {% if usuario_atual %}<a class="nav-link" href="{{ url_for('people.connections') }}" {% if request.blueprint == 'people' %}aria-current="page"{% endif %}>{{ icon('users') }} Conexões <span class="nav-badge" data-friend-requests {% if not friend_request_count %}hidden{% endif %}>{{ friend_request_count }}</span></a>{% endif %}
+            </div>
+            <div class="nav-actions">
+                {% if usuario_atual %}
+                <a class="nav-link nav-utility" href="{{ url_for('chat.index') }}" aria-label="Mensagens" title="Mensagens" {% if request.blueprint == 'chat' %}aria-current="page"{% endif %}>{{ icon('message') }}<span class="nav-utility-label">Mensagens</span></a>
+                <a class="nav-link nav-utility" href="{{ url_for('social.notifications') }}" data-notification-link data-notification-status-url="{{ url_for('social.notification_count') }}" aria-label="Notificações{{ ', ' ~ notification_unread_count ~ ' não lidas' if notification_unread_count else ', todas lidas' }}" title="Notificações" {% if request.endpoint == 'social.notifications' %}aria-current="page"{% endif %}>{{ icon('bell') }}<span class="nav-utility-label">Notificações</span><span class="nav-badge" data-unread-count {% if not notification_unread_count %}hidden{% endif %}>{{ notification_unread_count }}</span></a>
+                <a class="button small nav-create" href="{{ url_for('cards.cadastro_cards') }}" {% if request.endpoint == 'cards.cadastro_cards' %}aria-current="page"{% endif %}>{{ icon('plus') }} Criar card</a>
+                <details class="account-menu" data-account-menu>
+                    <summary aria-label="Menu da conta de @{{ usuario_atual.username }}"><img src="{{ image_url('avatar', usuario_atual.imagem) }}" alt=""><span class="account-name">@{{ usuario_atual.username }}</span>{{ icon('chevron-down') }}</summary>
+                    <div class="account-panel">
+                        <div class="account-identity"><span>MINHA CONTA</span><strong>{{ usuario_atual.nome }}</strong></div>
+                        <a href="{{ url_for('profiles.dashboard') }}" {% if request.endpoint == 'profiles.dashboard' %}aria-current="page"{% endif %}>{{ icon('layers') }} Meus cards</a>
+                        <a href="{{ url_for('progression.index') }}" {% if request.blueprint == 'progression' %}aria-current="page"{% endif %}>{{ icon('award') }} Minha jornada</a>
+                        <a href="{{ url_for('community.profile', username=usuario_atual.username) }}" {% if request.endpoint == 'community.profile' and request.view_args.username|upper == usuario_atual.username|upper %}aria-current="page"{% endif %}>{{ icon('user') }} Meu perfil público</a>
+                        <a href="{{ url_for('people.connections', aba='amigos') }}">{{ icon('users') }} Meus amigos</a>
+                        <a href="{{ url_for('people.connections', aba='recebidas') }}">{{ icon('user-plus') }} Solicitações de amizade</a>
+                        <a href="{{ url_for('profiles.edit') }}" {% if request.endpoint == 'profiles.edit' %}aria-current="page"{% endif %}>{{ icon('edit') }} Editar perfil</a>
+                        <a href="{{ url_for('settings.index') }}" {% if request.blueprint in ('settings', 'account_settings') %}aria-current="page"{% endif %}>{{ icon('settings') }} Configurações</a>
+                        {% if usuario_atual.admin == 1 %}<a href="{{ url_for('admin.index') }}" {% if request.endpoint == 'admin.index' %}aria-current="page"{% endif %}>{{ icon('shield') }} Administração</a><a href="{{ url_for('admin_catalog.index') }}" {% if request.blueprint == 'admin_catalog' %}aria-current="page"{% endif %}>{{ icon('book') }} Gerenciar obras</a><a href="{{ url_for('social.moderation') }}">{{ icon('shield') }} Moderação</a><a href="{{ url_for('privacy.admin_requests') }}">{{ icon('shield') }} Pedidos sobre dados</a>{% endif %}
+                        <form action="{{ url_for('auth.logout') }}" method="post" class="inline-form account-logout">
+                            {% include 'components/csrf.html' %}
+                            <button type="submit" class="text-button">{{ icon('logout') }} Sair da conta</button>
+                        </form>
+                    </div>
+                </details>
+                {% else %}
+                <a class="nav-link" href="{{ url_for('auth.index') }}" {% if request.endpoint == 'auth.index' %}aria-current="page"{% endif %}>{{ icon('login') }} Entrar</a>
+                <a class="button small" href="{{ url_for('auth.cadastro') }}">{{ icon('user-plus') }} Criar conta</a>
+                {% endif %}
+            </div>
+        </nav>
+        </details>
+    </div>
+</header>

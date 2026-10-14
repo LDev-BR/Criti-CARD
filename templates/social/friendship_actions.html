@@ -1,0 +1,28 @@
+{% from 'components/icons.html' import icon %}
+{% macro friend_action(action, label, glyph, secondary=false) %}
+<form method="post" action="{{ url_for('people.friendship', user_id=person.id) }}" data-connection-form="friendship">
+    {% include 'components/csrf.html' %}
+    <input type="hidden" name="action" value="{{ action }}">
+    <input type="hidden" name="context" value="{{ connection_context|default('connections') }}">
+    <input type="hidden" name="aba" value="{{ active_tab|default('amigos') }}">
+    <input type="hidden" name="q" value="{{ query|default('') }}">
+    <input type="hidden" name="page" value="{{ page|default(1) }}">
+    <button class="button small {{ 'secondary' if secondary }}" type="submit" data-friend-action="{{ action }}">{{ icon(glyph) }} {{ label }}</button>
+</form>
+{% endmacro %}
+<div class="friendship-actions" data-friendship-state="{{ friendship.state }}">
+{% if friendship.state == 'incoming' %}
+    {{ friend_action('accept', 'Aceitar', 'check') }}
+    {{ friend_action('decline', 'Recusar', 'close', true) }}
+{% elif friendship.state == 'outgoing' %}
+    <span class="relationship-state">{{ icon('clock') }} Solicitação enviada</span>
+    {{ friend_action('cancel', 'Cancelar', 'close', true) }}
+{% elif friendship.state == 'friends' %}
+    <details class="connection-options">
+        <summary class="relationship-state" role="button" aria-label="Gerenciar amizade com @{{ person.username }}">{{ icon('user-check') }} Amigos {{ icon('chevron-down') }}</summary>
+        <div class="connection-menu">{{ friend_action('remove', 'Desfazer amizade', 'user-minus', true) }}</div>
+    </details>
+{% else %}
+    {{ friend_action('request', 'Adicionar amigo' if connection_context|default('') == 'profile' else 'Adicionar', 'user-plus', true) }}
+{% endif %}
+</div>

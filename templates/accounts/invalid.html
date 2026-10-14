@@ -1,0 +1,10 @@
+{% extends 'accounts/layout.html' %}
+{% block title %}Solicitar novo link · Criti-CARD{% endblock %}
+{% block eyebrow %}VAMOS TENTAR DE NOVO{% endblock %}
+{% block heading %}Este link não está disponível{% endblock %}
+{% block account_content %}
+<p class="form-description">Ele pode ter expirado ou já ter sido utilizado. Solicite um novo link para continuar.</p>
+{% if purpose == 'reset' %}<a class="button accounts-primary-link" href="{{ url_for('accounts.forgot') }}">Solicitar novo link {% include 'icons/arrow-right.svg' %}</a>
+{% elif usuario_atual %}<form action="{{ url_for('accounts.resend') }}" method="post" class="enhanced-form">{% include 'components/csrf.html' %}<button type="submit" class="button form-submit">Reenviar verificação {% include 'icons/mail.svg' %}</button></form>
+{% else %}<a class="button accounts-primary-link" href="{{ url_for('auth.index') }}">Entrar para solicitar um link {% include 'icons/arrow-right.svg' %}</a>{% endif %}
+{% endblock %}

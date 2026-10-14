@@ -1,0 +1,12 @@
+<dialog id="review-dialog" class="review-dialog" aria-labelledby="review-dialog-title">
+    <div class="dialog-heading">
+        <span class="dialog-cover catalog-art" data-dialog-art><img class="catalog-art-image" data-dialog-cover alt=""></span>
+        <div class="dialog-identity"><h2 id="review-dialog-title" data-dialog-title></h2><p class="muted" data-dialog-author></p></div>
+        <span class="score dialog-score"><span data-dialog-score></span><small>/100</small></span>
+        <button type="button" class="icon-button dialog-close" data-close-dialog aria-label="Fechar leitura">{% include 'icons/close.svg' %}</button>
+    </div>
+    <section class="dialog-reader" data-reader aria-label="Crítica completa">
+        <div class="reader-page dialog-reader-page" data-reader-page role="document" tabindex="0" aria-live="polite"></div>
+        {% include 'components/reader_pages.html' %}
+    </section>
+</dialog>

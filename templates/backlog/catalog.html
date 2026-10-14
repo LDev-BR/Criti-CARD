@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon, category_icons %}
+{% from 'components/catalog_art.html' import catalog_art %}
+{% block title %}Catálogo · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='backlog.css') }}">{% endblock %}
+{% block content %}
+<div data-live-search="catalog">
+{% include 'components/live_search_feedback.html' %}
+<div data-live-body>
+<section class="backlog-intro"><div><p class="eyebrow">ENCONTRE SUA PRÓXIMA HISTÓRIA</p><h1>Um mundo para descobrir.</h1><p class="muted">Jogos, filmes, séries e leituras. Guarde o que desperta sua curiosidade.</p></div>
+    {% if usuario_atual %}<a class="button secondary" href="{{ url_for('backlog.index') }}">{{ icon('layers') }} Minha coleção</a>{% endif %}
+</section>
+{% include 'backlog/filters.html' %}
+<div class="section-heading backlog-heading"><h2 tabindex="-1" data-live-results-heading data-live-count="{{ works|length }}">{{ 'Sua busca' if filters.categoria or filters.q else 'Explore o catálogo' }} <span class="muted">({{ works|length }})</span></h2><p class="muted backlog-catalog-note">Adicionar à coleção começa uma história. A crítica é opcional.</p></div>
+<p class="backlog-live-status" role="status" aria-live="polite" data-backlog-message></p>
+<section class="catalog-grid" aria-label="Obras do catálogo">
+    {% for work in works %}<article class="catalog-work" data-catalog-work="{{ work.id }}">
+        <div class="catalog-cover">{{ catalog_art(work.cover_url, work.cover_art, title=work.titulo) }}<span class="catalog-category">{{ icon(category_icons.get(work.category_slug, 'layers')) }} {{ work.category_name }}</span></div>
+        <div class="catalog-work-content"><h3>{{ work.titulo }}</h3>{% if work.cover_art %}<p class="catalog-art-note">Ilustração temática original</p>{% endif %}
+            {% if usuario_atual %}
+                {% if work.backlog_id %}<a href="{{ url_for('backlog.index') }}" class="button secondary small catalog-added">{{ icon('check') }} Em sua coleção</a>
+                {% else %}<form action="{{ url_for('backlog.add_item') }}" method="post" data-backlog-add><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><input type="hidden" name="obra_id" value="{{ work.id }}"><button type="submit" class="button secondary small">{{ icon('plus') }} Adicionar à coleção</button></form>{% endif %}
+                <a class="with-icon catalog-review-link" href="{{ url_for('cards.edit_card', id=work.review_card_id) if work.review_card_id else url_for('cards.cadastro_cards', obra_id=work.id) }}">{{ icon('edit') }} {{ 'Editar meu card' if work.review_card_id else 'Criar card' }}</a>
+                <form class="catalog-follow-form" action="{{ url_for('social.follow_work', work_id=work.id) }}" method="post">{% include 'components/csrf.html' %}<input type="hidden" name="following" value="{{ 'false' if work.followed else 'true' }}"><button class="text-button" type="submit">{{ 'Deixar de seguir obra' if work.followed else 'Seguir obra' }}</button></form>
+            {% else %}<a class="button secondary small" href="{{ url_for('auth.index', next=url_for('backlog.catalog', categoria=filters.categoria, q=filters.q)) }}">{{ icon('plus') }} Entrar para adicionar</a><a class="catalog-follow-link" href="{{ url_for('auth.index', next=url_for('backlog.catalog', q=work.titulo)) }}">Seguir esta obra</a>{% endif %}
+        </div>
+    </article>{% else %}<div class="empty-state"><h3>Nenhuma obra encontrada</h3><p class="muted">Experimente outro título ou explore todas as categorias.</p><a class="button secondary small" href="{{ url_for('backlog.catalog') }}">{{ icon('reset') }} Limpar filtros</a></div>{% endfor %}
+</section>
+</div></div>
+{% endblock %}
+{% block scripts %}<script type="module" src="{{ url_for('static', filename='backlog.js') }}"></script>{% endblock %}

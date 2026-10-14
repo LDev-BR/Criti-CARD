@@ -1,78 +1,30 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CritiCard - Home</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
-    <link rel="shortcut icon" type="image/png" href="https://img.freepik.com/vetores-premium/letra-c-ou-iniciais-cc-ouro-luxo-dourado-elegante-elegante-simples-minimal-icone-vector-logo-design_216988-1942.jpg">
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
-    crossorigin="anonymous">
-</head>
-<body>
-    <header>
-        <h1 class="Lindao" id="Inici"><a href="">CritiCard</a></h1>
-    </header>
-    <div class="container">
-        <div class="card">
-            <div class="slide slide1">
-                <div class="content">
-                    <div class="icon">
-                        <img src="https://images.squarespace-cdn.com/content/63e808d50662b07891161bd5/57e49857-68b5-41f2-ba82-fc3b6f9b58fb/Yellow-profile.png?content-type=image%2Fpng" alt="Icone não criado" id="Icone_user" class="Gosling">
-                    </div>
-                </div>
+{% extends 'base.html' %}
+{% from 'components/form_fields.html' import attrs, error, password with context %}
+{% block title %}Entrar · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">{% endblock %}
+{% block content %}
+<div class="auth-layout login-layout">
+    {% set joining = false %}{% include 'components/auth_intro.html' %}
+    <section class="auth-panel" aria-labelledby="login-heading">
+        <p class="eyebrow">BEM-VINDO DE VOLTA</p>
+        <h2 id="login-heading">Entre na sua coleção</h2>
+        <p class="form-description">Seu próximo card está esperando por você.</p>
+        <form method="post" class="enhanced-form" data-validate>
+            {% include 'components/csrf.html' %}
+            {% if next_path %}<input type="hidden" name="next" value="{{ next_path }}">{% endif %}
+            <p class="form-status" data-form-status role="alert" tabindex="-1" {% if not login_error %}hidden{% endif %}>{{ login_error or '' }}</p>
+            <div class="field">
+                <label for="username">Username ou email</label>
+                <input id="username" name="username" value="{{ request.form.get('username', '') }}" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Seu username ou email" {{ attrs('username') }} required>
+                {{ error('username') }}
             </div>
-            <div class="slide slide2">
-                <div class="content">
-                    <h3>
-                        Crie seu perfil!!!
-                    </h3>
-                    <p>Logue ou cadastre</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <main class="Login">
-        <h2 class="Summary"><strong>FAÇA LOGIN</strong></h2> <br>
-        <form method="POST" id="Cadastro" >
-        Username ou Email: <input type="text" name="username" id="Cad" placeholder="Digite seu username..." required>
-        Senha: <input type="password" name="senha" placeholder="Digite sua senha..." id="Cad">
-        <button type="submit" class="Enviarbotao"><b>LOGAR</b></button>
+            {{ password() }}
+            <button class="button form-submit" type="submit">Entrar {% include 'icons/arrow-right.svg' %}</button>
         </form>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class=flashes>
-                    {% for message in messages %}
-                    <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-        <a href=" {{ url_for('cadastro') }} " id="link-cads">Não tem conta? Cadastre-se já😃!</a>
-    </main>
-    <footer class="rodape" id="contato">
-        <div class="rodape-div">
-            <div class="rodape-div-2">
-                <div class="rodape-div-2-coluna">
-                    <span><b>Contatos</b></span>
-                    <p><a href="">luisestudante235@gmail.com</a></p>
-                    <p>+55 82 99685-2419</p>
-                </div>
-            </div>
-            <div class="rodape-div-3">
-                <div class="rodape-div-3-coluna">
-                    <span><b>Links</b></span>
-                    <p><a href="https://github.com/LDev-BR" target="none">Github</a></p>
-                </div>
-            </div>
-            <div class="rodape-div-4">
-                <div class="rodape-div-4-coluna">
-                    <span><b>Outros</b></span>
-                    <p>Políticas de Privacidade</p>
-                </div>
-            </div>
+        <div class="auth-links">
+            <p class="auth-switch"><a href="{{ url_for('accounts.forgot') }}">Esqueci minha senha</a></p>
+            <p class="auth-switch">Novo por aqui? <a href="{{ url_for('auth.cadastro', next=next_path) if next_path else url_for('auth.cadastro') }}">Crie sua conta</a></p>
         </div>
-        <p class="rodape-direitos">Copyright © 2025 – Todos os Direitos Reservados.</p>
-    </footer>
-</body>
-</html>
+    </section>
+</div>
+{% endblock %}

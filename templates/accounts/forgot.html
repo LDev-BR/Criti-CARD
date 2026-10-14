@@ -1,0 +1,14 @@
+{% extends 'accounts/layout.html' %}
+{% from 'components/form_fields.html' import attrs, error with context %}
+{% block title %}Recuperar senha · Criti-CARD{% endblock %}
+{% block eyebrow %}VOLTE À SUA COLEÇÃO{% endblock %}
+{% block heading %}Esqueceu sua senha?{% endblock %}
+{% block account_content %}
+{% if submitted %}<p class="accounts-notice" role="status">{{ message }}</p><p class="form-description">Confira também a pasta de spam. Você pode solicitar um novo link se precisar.</p>{% else %}<p class="form-description">Informe seu email para receber um link e escolher uma nova senha.</p>{% endif %}
+<form method="post" class="enhanced-form" data-validate>
+    {% include 'components/csrf.html' %}<p class="form-status" data-form-status role="alert" hidden></p>
+    <div class="field"><label for="email">Email da sua conta</label><input id="email" name="email" type="email" autocomplete="email" maxlength="254" placeholder="voce@exemplo.com" {{ attrs('email') }} required>{{ error('email') }}</div>
+    <button class="button form-submit" type="submit">Enviar instruções {% include 'icons/arrow-right.svg' %}</button>
+</form>
+<p class="auth-switch">Lembrou sua senha? <a href="{{ url_for('auth.index') }}">Entrar</a></p>
+{% endblock %}

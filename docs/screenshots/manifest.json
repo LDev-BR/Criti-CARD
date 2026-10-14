@@ -1,0 +1,95 @@
+{
+  "generated_at_utc": "2026-10-14T17:52:00+00:00",
+  "data": "wholly fictional",
+  "browser": "Chromium",
+  "channel": "msedge",
+  "browser_version": "155.0.4283.45",
+  "browser_plugin": "not available; local Playwright used",
+  "checks": {
+    "http": "passed",
+    "page_identity": "passed",
+    "content": "passed",
+    "console_errors": [],
+    "horizontal_overflow": false,
+    "external_requests": [],
+    "interactions": [
+      "form login with CSRF",
+      "catalog live search",
+      "realtime chat send"
+    ]
+  },
+  "screenshots": [
+    {
+      "filename": "discovery-desktop.png",
+      "route": "/feed",
+      "title": "Descobrir · Criti-CARD",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "full_page": false,
+      "bytes": 613922,
+      "sha256": "10426940b7c0382158ee6ad9406643651fc4df232bf5a78ac185128c64300eb9"
+    },
+    {
+      "filename": "reviews-desktop.png",
+      "route": "/criticas",
+      "title": "Feed de críticas · Criti-CARD",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "full_page": false,
+      "bytes": 810103,
+      "sha256": "dbdd0a6b86b966d0de52826554e2cac1bc5b9c16b629f27d1c71dca6d2f1326f"
+    },
+    {
+      "filename": "catalog-desktop.png",
+      "route": "/catalogo",
+      "title": "Catálogo · Criti-CARD",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "full_page": false,
+      "bytes": 752057,
+      "sha256": "aee2d4b7db19ab36450ede5bef96f07cb52a57a0549a8fb4c559289d84ce67dc"
+    },
+    {
+      "filename": "community-desktop.png",
+      "route": "/comunidades/entre-paginas-e-telas",
+      "title": "Entre páginas e telas · Comunidades",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "full_page": false,
+      "bytes": 212411,
+      "sha256": "20d496e5c7f260d7bee75c192a227a2f32e0f74b094179c491277ebe2de5636d"
+    },
+    {
+      "filename": "chat-desktop.png",
+      "route": "/mensagens/1",
+      "title": "Conversa com Leo · Criti-CARD",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "full_page": false,
+      "bytes": 165517,
+      "sha256": "b43ee1aaf0e191e83def8ce0f273b08f94b21b61b64a8d86c20084c8c6b30dd2"
+    },
+    {
+      "filename": "journey-mobile.png",
+      "route": "/jornada",
+      "title": "Minha jornada · Criti-CARD",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "full_page": false,
+      "bytes": 87992,
+      "sha256": "4a0d0b481ea38bc0795024a78af65ed4e9bdd4a3719b55e29eb9a2aa7aae0116"
+    }
+  ]
+}

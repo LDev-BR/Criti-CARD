@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block title %}Atendimento de privacidade · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='privacy.css') }}">{% endblock %}
+{% block content %}
+<div class="privacy-page"><header class="privacy-heading"><p class="eyebrow">ADMINISTRAÇÃO</p><h1>Atendimento de privacidade</h1><p class="muted">Acesso restrito. Revise os pedidos, responda ao titular e registre as providências no protocolo.</p></header><form method="get" class="privacy-filter"><label for="filter-status">Filtrar por status</label><select id="filter-status" name="status"><option value="">Todos</option>{% for key, label in statuses.items() %}<option value="{{ key }}"{% if listing.status == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select><button class="button secondary" type="submit">Aplicar</button></form>
+<p class="muted">{{ listing.total }} pedido(s).</p><ul class="privacy-list">{% for item in listing.requests %}<li><a href="{{ url_for('privacy.admin_detail', protocol=item.protocol) }}"><strong>{{ item.kind_label }}</strong><span class="privacy-status">{{ item.status_label }}</span><span class="privacy-protocol">{{ item.protocol }}</span></a><p class="muted">@{{ item.owner.username }} · <time datetime="{{ item.created_at }}">{{ item.created_at[:10] }}</time></p></li>{% else %}<li>Nenhum pedido neste filtro.</li>{% endfor %}</ul>{% include 'privacy/pagination.html' %}</div>
+{% endblock %}

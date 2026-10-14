@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% from 'components/form_fields.html' import attrs, error, upload with context %}
+{% block title %}{{ 'Editar obra' if editing else 'Cadastrar obra' }} · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='admin-catalog.js') }}" type="module"></script>{% endblock %}
+{% block content %}
+<section class="admin-shell admin-form-shell">
+    <a class="back-link" href="{{ url_for('admin_catalog.index') }}">{{ icon('chevron-left') }} Gerenciar obras</a>
+    <header class="admin-heading"><div><p class="eyebrow">{{ 'ATUALIZE O CATÁLOGO' if editing else 'UMA NOVA OBRA PARA DESCOBRIR' }}</p><h1>{{ 'Editar obra' if editing else 'Cadastrar obra' }}</h1><p class="muted">Defina o título, a categoria e a capa que aparece nos cards.</p></div></header>
+    <div class="admin-form-layout" data-admin-work-editor>
+        <form method="post" enctype="multipart/form-data" class="enhanced-form admin-work-form" data-validate>
+            {% include 'components/csrf.html' %}{% include 'components/form_status.html' %}
+            <fieldset class="form-section"><legend><span>01</span> Sobre a obra</legend>
+                <div class="field"><label for="titulo">Título da obra</label><input id="titulo" name="titulo" maxlength="120" value="{{ values.get('titulo', '') }}" placeholder="O título completo da obra" {{ attrs('titulo', true) }} required><small id="titulo-help" class="field-help">Use o título pelo qual a comunidade conhece a obra.</small>{{ error('titulo') }}</div>
+                <div class="field"><label for="categoria_id">Categoria</label><select id="categoria_id" name="categoria_id" {{ attrs('categoria_id') }} required><option value="">Escolha uma categoria</option>{% for category in categories %}<option value="{{ category.id }}" {% if values.get('categoria_id', '')|string == category.id|string %}selected{% endif %}>{{ category.nome }}</option>{% endfor %}</select>{{ error('categoria_id') }}</div>
+            </fieldset>
+            <fieldset class="form-section"><legend><span>02</span> Capa da obra</legend>
+                {% set upload_markup %}{{ upload('capa', 'Imagem de capa', cover_url, required=not editing, editing=editing) }}{% endset %}
+                {{ upload_markup|replace('data-crop-ratio="1.5625"', 'data-crop-ratio="1.5"'|safe)|replace('a capa do card', 'a capa da obra') }}
+                <p class="field-help">A capa será usada nas críticas desta obra. O recorte mantém o formato 3:2.</p>
+            </fieldset>
+            <div class="admin-form-actions"><a href="{{ url_for('admin_catalog.index') }}">Cancelar</a><button class="button form-submit" type="submit">{{ 'Salvar alterações' if editing else 'Cadastrar obra' }} {{ icon('arrow-right') }}</button></div>
+        </form>
+        <aside class="admin-cover-preview" aria-label="Prévia da obra">
+            <p class="eyebrow">PRÉVIA NO CATÁLOGO</p>
+            <div class="admin-preview-card"><div class="admin-preview-image" data-admin-preview-image><span class="catalog-art{% if cover_art %} catalog-art--atlas catalog-art--col-{{ cover_art.column }} catalog-art--row-{{ cover_art.row }}{% endif %}">{% if cover_art %}<span class="catalog-art-frame">{% endif %}<img id="cover-preview" class="catalog-art-image" src="{{ cover_url }}" alt="{{ cover_art.label if cover_art else 'Prévia da capa da obra' }}" loading="eager" width="450" height="300">{% if cover_art %}</span>{% endif %}</span></div><div class="admin-preview-body"><span class="admin-preview-category" data-admin-preview-category>{% for category in categories %}{% if values.get('categoria_id', '')|string == category.id|string %}{{ category.nome }}{% endif %}{% endfor %}</span><h2 data-admin-preview-title>{{ values.get('titulo') or 'O título da obra' }}</h2><p>Uma nova história para a comunidade.</p></div></div>
+            <p class="admin-preview-note">Confira a imagem antes de salvar. Você pode ajustar o recorte ou {{ 'manter a capa atual' if editing else 'escolher outra capa' }}.</p>
+            {% if editing and not work.active %}<p class="admin-retired-note">Esta obra está retirada. Editar seus dados mantém a disponibilidade atual; reative-a na lista quando estiver pronta.</p>{% endif %}
+        </aside>
+    </div>
+</section>
+{% endblock %}

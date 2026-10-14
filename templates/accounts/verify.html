@@ -1,0 +1,10 @@
+{% extends 'accounts/layout.html' %}
+{% block title %}Verificar email · Criti-CARD{% endblock %}
+{% block eyebrow %}SUA CONTA COM VOCÊ{% endblock %}
+{% block heading %}Confirme seu email{% endblock %}
+{% block account_content %}
+<p class="form-description">Confirme que este email é seu para manter sua conta pronta para as próximas descobertas.</p>
+<form method="post" class="enhanced-form">
+    {% include 'components/csrf.html' %}<button class="button form-submit" type="submit">Confirmar meu email {% include 'icons/check.svg' %}</button>
+</form>
+{% endblock %}

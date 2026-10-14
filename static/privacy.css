@@ -1,0 +1,25 @@
+.privacy-page{max-width:850px;margin:0 auto;padding:1rem 0 3rem;line-height:1.7}
+.privacy-heading{margin-bottom:2rem}
+.privacy-heading h1{line-height:1.15;margin:.6rem 0 1rem}
+.privacy-page section{margin:2.25rem 0}
+.privacy-page h2{line-height:1.3;margin-bottom:.8rem}
+.privacy-page ul{padding-left:1.3rem}
+.privacy-page li{margin:.75rem 0}
+.privacy-page p,.privacy-page a{overflow-wrap:anywhere}
+.privacy-page .button{margin:.35rem .35rem .35rem 0}
+.privacy-form{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem}
+.privacy-form form{display:grid;gap:.65rem}
+.privacy-form label{font-weight:700;margin-top:.5rem}
+.privacy-form select,.privacy-form textarea,.privacy-filter select{width:100%;min-width:0;padding:.85rem;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);color:var(--text);font:inherit}
+.privacy-form textarea{resize:vertical}
+.privacy-form .field-help{margin:0}
+.privacy-form .button{justify-self:start}
+.privacy-page .privacy-list{list-style:none;padding:0;border-top:1px solid var(--line)}
+.privacy-list li{border-bottom:1px solid var(--line);padding:1rem 0;margin:0}
+.privacy-list a{display:block}
+.privacy-status{display:inline-block;font-size:.85rem;font-weight:700;padding:.15rem .6rem;border:1px solid var(--line);border-radius:100px;margin-left:.35rem}
+.privacy-protocol{display:block;font-size:.8rem;margin:.5rem 0;overflow-wrap:anywhere}
+.privacy-filter{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
+.privacy-filter select{width:auto;min-width:160px}
+.privacy-pagination{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:1rem}
+@media(max-width:600px){.privacy-page{padding-top:.5rem}.privacy-form{padding:1rem}.privacy-list .privacy-status{display:table;margin:.5rem 0}.privacy-filter{align-items:stretch;flex-direction:column}.privacy-filter select{width:100%}}

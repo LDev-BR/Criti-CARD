@@ -1,49 +1,113 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='cadastro.css') }}">
-    <link rel="shortcut icon" type="image/png" href="https://img.freepik.com/vetores-premium/letra-c-ou-iniciais-cc-ouro-luxo-dourado-elegante-elegante-simples-minimal-icone-vector-logo-design_216988-1942.jpg">
-    <title>CritiCard - Cadastro</title>
-</head>
-<body>
-    <div class="Container">
-        <header><h2>CRIE SEU CARD</h2></header>
-        <form method="POST" enctype="multipart/form-data">
-            TITULO: <input type="text" placeholder="Crie um titulo..." maxlength="15" name="titulo" required>
-            CAPA: <label for="capa"><img src="" id="Card_capa" class="Gosling"></label><input type="file" name="capa" id="capa" required>
-            DESCRIÇÃO <textarea name="sobre" id="abt" placeholder="Digite uma descrição sobre você..." maxlength="300" rows="3" required></textarea>
-            NOTA: <input type="number" min="0" max="100" name="nota" placeholder="Escolha uma nota...." required>
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul class=flashes>
-                    {% for message in messages %}
-                    <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            {% endwith %}
-            <button type="submit" class="Botao"><b>CRIAR</b></button>
-    </form>
-        <a href=" {{ url_for('dashboard') }}"><button id="Botao"><b>VOLTAR</b></button></a>
+{% extends 'base.html' %}
+{% from 'components/form_fields.html' import attrs, error with context %}
+{% block title %}{{ 'Editar card' if editing else 'Criar card' }} · Criti-CARD{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='card-composer.css') }}">
+{% endblock %}
+{% block content %}
+{% set legacy_card = editing and not card.obra_id %}
+{% set cover_source = preview_cover_source|default(image_url('cover', card.capa) if editing else url_for('static', filename=preview_art.filename if preview_art else 'default-cover.svg'), true) %}
+<div class="composer">
+    <a class="back-link" href="{{ url_for('profiles.dashboard') }}">{% include 'icons/chevron-left.svg' %} Meus cards</a>
+    <header class="composer-heading">
+        <p class="eyebrow">{{ 'REFINE SUA CRÍTICA' if editing else 'HISTÓRIAS QUE MERECEM UM CARD' }}</p>
+        <h1>{{ 'Edite sua crítica' if editing else 'Crie sua crítica' }}</h1>
+        <p class="form-description">Escolha a obra, dê sua nota e conte o que ficou com você.</p>
+        {% if progression_summary.daily_remaining==0 %}<p class="muted" role="status">A cota de 200 XP de hoje acabou. Você pode publicar normalmente, mas esta obra não acumulará XP para outro dia. A cota renova às 00:00 UTC.</p>{% endif %}
+    </header>
+    <div class="composer-layout" data-card-editor>
+        <form method="post" class="enhanced-form composer-form" data-validate>
+            {% include 'components/csrf.html' %}
+            {% include 'components/form_status.html' %}
+            <fieldset class="form-section">
+                <legend><span>01</span> A obra</legend>
+                <div class="field" data-work-search-wrap hidden>
+                    <label for="obra-busca">Buscar no catálogo</label>
+                    <div class="work-search-control">
+                        <input type="search" id="obra-busca" data-work-search placeholder="Qual obra você quer avaliar?" maxlength="120" aria-describedby="obra-busca-help" autocomplete="off">
+                        <button type="button" class="text-button work-search-clear" data-clear-work-search aria-label="Limpar busca de obras" hidden>Limpar</button>
+                    </div>
+                    <small id="obra-busca-help" class="field-help" data-work-search-status role="status">Busque um título ou explore as categorias abaixo.</small>
+                </div>
+                <div class="field-row catalog-fields">
+                    <div class="field">
+                        <label for="categoria_id">Categoria</label>
+                        <select id="categoria_id" name="categoria_id" {{ attrs('categoria_id') }}>
+                            <option value="">Todas</option>
+                            {% for category in catalog %}<option value="{{ category.id }}" {% if values.get('categoria_id', '')|string == category.id|string %}selected{% endif %}>{{ category.nome }}</option>{% endfor %}
+                        </select>
+                        {{ error('categoria_id') }}
+                    </div>
+                    <div class="field">
+                        <label for="obra_id">Obra</label>
+                        <select id="obra_id" name="obra_id" data-catalog-work {{ attrs('obra_id', true) }} {% if not legacy_card %}required{% endif %}>
+                            <option value="">{{ 'Manter obra anterior: ' + card.titulo if legacy_card else 'Escolha uma obra' }}</option>
+                            {% for category in catalog %}<optgroup label="{{ category.nome }}" data-category="{{ category.id }}">{% for work in category.works %}<option value="{{ work.id }}" data-title="{{ work.titulo }}" data-category="{{ category.id }}" data-category-name="{{ category.nome }}" {% if work.existing_card_id|default(none) %}data-existing-card="{{ work.existing_card_id }}" data-edit-url="{{ url_for('cards.edit_card', id=work.existing_card_id) }}"{% endif %} {% if not work.active|default(true) %}data-retired="true"{% endif %} {% if work.cover_art %}data-art-source="{{ work.cover_source }}" data-art-column="{{ work.cover_art.column }}" data-art-row="{{ work.cover_art.row }}"{% elif work.cover_source %}data-cover-source="{{ work.cover_source }}"{% endif %} {% if values.get('obra_id', '')|string == work.id|string %}selected{% endif %}>{{ work.option_label|default(work.titulo) }}{{ ' · Já avaliada' if work.existing_card_id|default(none) else '' }}</option>{% endfor %}</optgroup>{% endfor %}
+                        </select>
+                        <small id="obra_id-help" class="field-help visually-hidden">A capa e o título acompanham a obra escolhida.</small>
+                        {{ error('obra_id') }}
+                    </div>
+                </div>
+                <div id="existing-review-notice" class="existing-review-notice" data-existing-review role="status" aria-live="polite" {% if not duplicate_card_id|default(none) %}hidden{% endif %}>
+                    <p data-existing-message>{% if duplicate_card_id|default(none) %}Você já avaliou {{ values.get('titulo') or 'esta obra' }}. Atualize seu card existente.{% endif %}</p>
+                    <a class="button secondary" data-existing-edit {% if duplicate_card_id|default(none) %}href="{{ url_for('cards.edit_card', id=duplicate_card_id) }}"{% endif %}>Editar meu card {% include 'icons/arrow-right.svg' %}</a>
+                </div>
+                {% if legacy_card %}
+                <div class="field legacy-title-field" data-legacy-title-field>
+                    <label for="titulo">Título da obra anterior</label>
+                    <input id="titulo" name="titulo" maxlength="120" value="{{ values.get('titulo', '') }}" {{ attrs('titulo', true) }} required>
+                    <small id="titulo-help" class="field-help">Você pode manter este card antigo ou vinculá-lo a uma obra do catálogo.</small>
+                    {{ error('titulo') }}
+                </div>
+                {% else %}
+                <input type="hidden" id="titulo" name="titulo" value="{{ values.get('titulo', '') }}">
+                {{ error('titulo') }}
+                {% endif %}
+                <div class="selected-work" data-selected-work>
+                    <div class="selected-work-cover catalog-art{% if preview_art %} catalog-art--atlas catalog-art--col-{{ preview_art.column }} catalog-art--row-{{ preview_art.row }}{% endif %}" data-selected-cover>{% if preview_art %}<span class="catalog-art-frame">{% endif %}<img class="catalog-art-image" src="{{ cover_source }}" alt="" data-selected-cover-image>{% if preview_art %}</span>{% endif %}</div>
+                    <div class="selected-work-copy">
+                        <span class="selected-work-category" data-selected-category>{{ values.get('categoria_nome') or 'SEU PRÓXIMO CARD' }}</span>
+                        <strong data-selected-title>{{ values.get('titulo') or 'Escolha uma obra para começar' }}</strong>
+                        <span class="selected-work-note" data-selected-note>{{ 'Sua capa anterior será preservada.' if legacy_card and not values.get('obra_id') else 'Capa do catálogo · pronta para o seu card' if values.get('obra_id') else 'A capa do catálogo aparece aqui.' }}</span>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="form-section">
+                <legend><span>02</span> Sua experiência</legend>
+                <div class="field score-field">
+                    <div class="score-copy"><label for="nota">Sua nota</label><small id="nota-help" class="field-help">De 0 a 100.</small></div>
+                    <div class="score-control"><input type="number" id="nota" name="nota" min="0" max="100" step="1" inputmode="numeric" value="{{ values.get('nota', '') }}" placeholder="—" {{ attrs('nota', true) }} required><span aria-hidden="true">/100</span></div>
+                    <div class="score-slider" data-score-slider-wrap hidden>
+                        <label class="visually-hidden" for="nota-slider">Ajustar sua nota</label>
+                        <input type="range" id="nota-slider" min="0" max="100" step="1" value="{{ values.get('nota') if values.get('nota', '') != '' else '50' }}" aria-describedby="nota-help" data-score-slider>
+                        <div class="score-scale" aria-hidden="true"><span>0</span><span>50</span><span>100</span></div>
+                    </div>
+                    {{ error('nota') }}
+                </div>
+                <div class="field critique-field">
+                    <label for="sobre">Sua crítica</label>
+                    <textarea id="sobre" name="sobre" maxlength="3000" rows="4" data-counter="sobre-count" placeholder="O que ficou com você? Conte os pontos altos e o que poderia ter sido melhor." {{ attrs('sobre', true) }} required>{{ values.get('sobre', '') }}</textarea>
+                    <div class="field-meta"><small id="sobre-help" class="field-help">Seu texto completo pode ser lido ao abrir o card.</small><span id="sobre-count" class="character-count">{{ values.get('sobre', '')|length }}/3000</span></div>
+                    {{ error('sobre') }}
+                </div>
+            </fieldset>
+            <div class="composer-actions"><a href="{{ url_for('profiles.dashboard') }}">Cancelar</a><button type="button" class="button secondary draft-mobile-trigger" data-open-draft aria-expanded="false" hidden>{% include 'icons/expand.svg' %} Ver prévia</button><button class="button form-submit" type="submit">{{ 'Salvar alterações' if editing else 'Publicar card' }} {% include 'icons/arrow-right.svg' %}</button></div>
+        </form>
+        <aside class="editor-preview" aria-label="Prévia do card">
+            <div class="preview-label"><span class="eyebrow">SEU CARD</span><span class="live-indicator" data-live-indicator hidden>Prévia ao vivo</span><button type="button" class="text-button mobile-preview-close" data-close-draft hidden>Fechar prévia</button></div>
+            <div class="draft-card" data-card-style="{{ progression_style.card_slug }}">
+                <div class="draft-cover catalog-art{% if preview_art %} catalog-art--atlas catalog-art--col-{{ preview_art.column }} catalog-art--row-{{ preview_art.row }}{% endif %}" data-draft-cover>{% if preview_art %}<span class="catalog-art-frame">{% endif %}<img id="cover-preview" class="catalog-art-image" src="{{ cover_source }}" alt="{{ preview_art.label if preview_art else 'Prévia da capa' }}">{% if preview_art %}</span>{% endif %}<span data-draft-category>{{ values.get('categoria_nome') or 'CRITI-CARD' }}</span></div>
+                <div class="draft-body">
+                    <div class="draft-author">{% from 'components/reward_avatar.html' import reward_avatar %}{{ reward_avatar(image_url('avatar',usuario_atual.imagem),progression_style) }}<div>{{ usuario_atual.nome }}<small>@{{ usuario_atual.username }}</small></div></div>
+                    <div class="draft-title-row"><h2 data-draft-title>{{ values.get('titulo') or 'O título da sua obra' }}</h2><div class="draft-score"><strong data-draft-score>{{ values.get('nota') if values.get('nota', '') != '' else '—' }}</strong><small>/100</small></div></div>
+                    <p class="draft-excerpt" data-draft-excerpt>{{ values.get('sobre') or 'As primeiras linhas da sua crítica aparecem aqui. Sua experiência dá vida ao card.' }}</p>
+                    <div class="draft-footer"><span>SUA CRÍTICA, EM UM CARD</span>{% include 'icons/expand.svg' %}</div>
+                </div>
+            </div>
+            <p class="preview-note">{{ 'As alterações ficam públicas ao salvar.' if editing else 'Pronto para a sua coleção. O card fica público ao publicar.' }}</p>
+            <noscript><p class="field-help">A prévia será atualizada depois de {{ 'salvar' if editing else 'publicar' }}.</p></noscript>
+        </aside>
     </div>
-    <footer>
-        <p>&copy;2025 - LD</p>
-    </footer>
-        <script>
-        const inputImagem = document.getElementById('capa');
-        const imgPreview = document.getElementById('Card_capa');
-        inputImagem.addEventListener('change', function() {
-        const arquivo = this.files[0];
-        if (arquivo) {
-            const leitor = new FileReader();
-            leitor.onload = function(e) {
-                imgPreview.src = e.target.result;
-            };
-            leitor.readAsDataURL(arquivo);
-        }
-    });
-    </script>
-</body>
-</html>
+</div>
+{% endblock %}

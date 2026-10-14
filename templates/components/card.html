@@ -1,0 +1,42 @@
+{% from 'components/catalog_art.html' import catalog_art %}
+{% from 'components/reward_avatar.html' import reward_avatar %}
+{% set card_style = c.get('progression_style', {}) %}
+<article class="review-card" id="card-{{ c.id }}" data-card-style="{{ card_style.get('card_slug','card_classic') }}" data-review-card data-title="{{ c.titulo }}" data-author="{{ c.nome }} · @{{ c.username }}" data-score="{{ c.nota }}">
+    <div class="card-surface">
+        <div class="card-front" data-card-front>
+            <a class="card-cover-link" href="{{ url_for('cards.detail', id=c.id) }}" data-open-review aria-label="Ler crítica: {{ c.titulo }}">
+                {{ catalog_art(image_url('cover', c.capa), art_for_marker(c.capa), c.titulo, 'card-cover') }}
+            </a>
+            <div class="card-content">
+                <div class="card-topline">
+                    <a class="card-author" href="{{ url_for('community.profile', username=c.username) }}">
+                        {{ reward_avatar(image_url('avatar', c.autor_imagem),card_style,'','author-avatar',true) }}
+                        <span>{{ c.nome }}<small>@{{ c.username }}</small></span>
+                    </a>
+                    <span class="score" aria-label="Nota {{ c.nota }} de 100">{{ c.nota }}<small>/100</small></span>
+                </div>
+                <h2 class="card-title" title="{{ c.titulo }}">{{ c.titulo }}</h2>
+                <p class="card-excerpt">{{ c.sobre|truncate(170, true, '…') }}</p>
+                <a class="read-review" href="{{ url_for('cards.detail', id=c.id) }}" data-open-review>Ler crítica {% include 'icons/arrow-right.svg' %}</a>
+            </div>
+        </div>
+        <section class="card-back" data-card-back hidden aria-label="Crítica de {{ c.titulo }}">
+            <div class="card-back-heading"><div><span class="reader-label">A crítica</span><h3>{{ c.titulo }}</h3></div><button type="button" class="icon-button" data-close-preview aria-label="Voltar à capa">{% include 'icons/close.svg' %}</button></div>
+            <div class="card-reader" data-reader>
+                <div class="reader-page card-reader-page" data-reader-page role="document" tabindex="0" aria-live="polite"></div>
+                {% include 'components/reader_pages.html' %}
+            </div>
+            <button type="button" class="button secondary expand-review" data-expand-review>Expandir leitura {% include 'icons/expand.svg' %}</button>
+        </section>
+    </div>
+    <footer class="card-footer">
+        {% if c.categoria_nome %}<span class="card-category">{{ c.categoria_nome }}</span>{% endif %}
+        {% if c.archived %}<span class="card-hint">Histórico privado</span>{% else %}
+        {% with social_state=social_states.get(c.id, {}) if social_states is defined else {'liked': false, 'like_count': 0, 'comment_count': 0}, compact=true %}{% include 'components/social_actions.html' %}{% endwith %}
+        {% endif %}
+        {% if usuario_atual and c.author_id == usuario_atual.id and not c.archived %}
+            {% include 'components/card_actions.html' %}
+        {% endif %}
+    </footer>
+    <template data-review-text>{{ c.sobre }}</template>
+</article>

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Moderação · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='social.css') }}">{% endblock %}
+{% block content %}
+<section class="social-page"><p class="eyebrow">COMUNIDADE</p><h1>Denúncias</h1>
+{% for report in reports %}
+<article class="social-report"><header><h2>{{ {'card':'Card', 'comment':'Comentário', 'user':'Perfil', 'chat_message':'Mensagem de grupo', 'community_post':'Publicação de comunidade', 'community_comment':'Comentário de comunidade'}[report.target_type] }} #{{ report.target_id }}</h2><span class="muted">{{ 'Pendente' if report.status == 'pending' else 'Resolvida' }}</span></header>
+    {% if report.target_preview %}<p class="preserve-lines">{{ report.target_preview }}</p>{% endif %}
+    <p class="preserve-lines">{{ report.reason }}</p><p class="muted">Enviada por {{ '@' + report.reporter_username if report.reporter_username else 'conta excluída' }} em {{ report.created_at.strftime('%d/%m/%Y') }}</p>
+    {% if report.status == 'pending' %}<form method="post" action="{{ url_for('social.resolve_report', report_id=report.id) }}" data-social-form="resolve-report">{% include 'components/csrf.html' %}<button class="button secondary" type="submit">Marcar como resolvida</button><p data-social-status class="social-status" role="status" hidden></p></form>{% endif %}
+</article>
+{% else %}<p class="muted">Nenhuma denúncia recebida.</p>{% endfor %}
+{% if pages > 1 %}<nav class="pagination" aria-label="Páginas de denúncias">{% if page > 1 %}<a href="{{ url_for('social.moderation', page=page-1) }}">Anterior</a>{% endif %}<span>{{ page }} de {{ pages }}</span>{% if page < pages %}<a href="{{ url_for('social.moderation', page=page+1) }}">Próxima</a>{% endif %}</nav>{% endif %}
+</section><script type="module" src="{{ url_for('static', filename='social.js') }}"></script>
+{% endblock %}

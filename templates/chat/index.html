@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Mensagens · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='chat.js') }}" type="module"></script>{% endblock %}
+{% block content %}
+<section class="chat-home">
+    <header class="chat-intro"><p class="eyebrow">TROQUE IDEIAS</p><h1>Mensagens</h1><p class="muted">Boas descobertas rendem boas conversas.</p></header>
+    <div class="chat-workspace">
+        {% include 'chat/sidebar.html' %}
+        <section class="chat-welcome" aria-labelledby="chat-welcome-title">
+            <span class="chat-welcome-icon" aria-hidden="true">{% include 'icons/message.svg' %}</span>
+            <p class="eyebrow">UM ESPAÇO PARA TROCAR</p>
+            <h2 id="chat-welcome-title">Uma ideia pode ser<br>o começo de uma conversa.</h2>
+            <p class="muted">Escolha uma conversa, encontre alguém ou descubra um grupo<br class="chat-desktop-break"> para compartilhar sua próxima descoberta.</p>
+            <a class="button secondary" href="{{ url_for('chat.groups') }}">{% include 'icons/users.svg' %} Explorar grupos</a>
+            <button class="button secondary" type="button" data-chat-new hidden>{% include 'icons/plus.svg' %} Nova conversa</button>
+            <span class="chat-welcome-note">{% include 'icons/shield.svg' %} Conversas diretas e grupos têm regras de acesso próprias.</span>
+        </section>
+    </div>
+</section>
+{% endblock %}

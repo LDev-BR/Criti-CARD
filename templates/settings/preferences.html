@@ -1,0 +1,12 @@
+{% from 'settings/fields.html' import preference with context %}
+{% if active_section == 'aparencia' %}
+<div class="settings-preview" aria-label="Prévia de aparência"><span class="settings-preview-mark">{{ icon('compass') }}</span><div><span class="settings-eyebrow">UMA NOVA PERSPECTIVA</span><h3>Boas histórias merecem espaço.</h3><p>Encontre seu ritmo de leitura. Guarde suas próximas descobertas.</p></div><span class="settings-preview-tag">Sua coleção</span></div>
+{% endif %}
+<form method="post" action="{{ url_for('settings.save', section=active_section) }}" class="settings-form" data-settings-form data-settings-section="{{ active_section }}">
+    {% include 'components/csrf.html' %}
+    {% if errors.get('_form') %}<p class="field-error" role="alert">{{ errors['_form'] }}</p>{% endif %}
+    <div class="settings-options">{% for name in section_fields[active_section] %}{{ preference(name, fields[name]) }}{% endfor %}</div>
+    <div class="settings-save-bar"><p class="settings-save-status" data-settings-dirty role="status">{{ icon('check') }}<span>Preferências salvas na sua conta</span></p><div><button type="button" class="button secondary" data-settings-discard hidden>Descartar</button><button type="submit" class="button" data-settings-save>{{ icon('check') }} Salvar alterações</button></div></div>
+</form>
+<form method="post" action="{{ url_for('settings.reset', section=active_section) }}" class="settings-reset">{% include 'components/csrf.html' %}<button type="submit" class="text-button">{{ icon('reset') }} Restaurar padrões desta área</button></form>
+{% if active_section == 'privacidade' %}<div class="settings-account-block"><h3>{{ icon('shield') }} Seus direitos sobre dados</h3><p class="muted">Precisa de informações ou quer corrigir ou excluir dados? Abra um pedido e acompanhe o atendimento pela sua conta.</p><div class="settings-privacy-links"><a class="button secondary" href="{{ url_for('privacy.requests') }}">{{ icon('mail') }} Meus pedidos sobre dados</a><a href="{{ url_for('privacy.policy') }}">Política de privacidade {{ icon('arrow-right') }}</a></div></div>{% endif %}

@@ -1,0 +1,50 @@
+.social-actions, .user-social-actions, .comment-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; }
+.social-actions { border-top: 1px solid var(--line); padding: 12px 0; font-size: 11px; }
+.social-actions .icon { width: 16px; height: 16px; flex: none; }
+.social-actions-compact { border: 0; padding: 0; flex-wrap: nowrap; gap: 12px; margin-right: auto; }
+.social-actions-compact .social-button { min-height: 40px; }
+.review-card { position: relative; }
+.social-actions-compact .social-status { position: absolute; bottom: 46px; left: 12px; width: calc(100% - 24px); padding: 10px; background: var(--panel); border: 1px solid var(--gold-border); border-radius: 5px; z-index: 3; }
+.card-footer .owner-actions { gap: 12px; }
+.card-footer .owner-actions span { display: none; }
+.card-footer .owner-actions a, .card-footer .owner-actions button { width: 32px; min-height: 40px; justify-content: center; }
+.feed-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
+.feed-tabs a { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); font-size: 12px; }
+.feed-tabs a[aria-current] { border-color: var(--gold-border); background: var(--gold-wash); color: var(--gold-light); }
+.feed-tabs .icon { width: 16px; height: 16px; }
+.profile-links { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
+.verification-note { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; padding: 20px; margin: 24px 0; background: var(--gold-wash); border: 1px solid var(--gold-border); border-radius: var(--radius); font-size: 12px; }
+.verification-note strong { color: var(--gold-light); font-weight: 600; }
+.verification-note p { margin: 6px 0 0; overflow-wrap: anywhere; }
+.social-actions form, .user-social-actions form, .comment-actions form { display: inline-flex; margin: 0; width: auto; padding: 0; border: 0; background: transparent; }
+.social-button, .social-link { display: inline-flex; align-items: center; gap: 7px; background: transparent; border: 0; color: var(--muted); cursor: pointer; font: inherit; padding: 6px 0; min-height: 32px; }
+.social-button:hover, .social-link:hover, .social-button[aria-pressed="true"] { color: var(--gold-light); }
+.social-button:disabled { opacity: .55; cursor: default; }
+.social-button:focus-visible, .social-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 2px; }
+.social-status { width: 100%; font-size: 12px; color: var(--gold-light); overflow-wrap: anywhere; }
+.social-status[data-error="true"] { color: #efa9a9; }
+.social-page { max-width: 840px; margin: 32px auto 64px; }
+.social-page > h1 { font: 500 clamp(36px, 6vw, 56px)/1.1 var(--font-display); margin-bottom: 20px; overflow-wrap: anywhere; }
+.social-page > .muted { margin-bottom: 24px; }
+.comments-section { margin-top: 36px; }
+.comments-section h2 { font: 500 28px var(--font-display); }
+form.social-compose { display: grid; gap: 12px; padding: 24px; margin: 24px 0; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); }
+.social-compose label { margin: 0; font-size: 12px; }
+.social-compose textarea { min-height: 108px; width: 100%; resize: vertical; padding: 12px; border: 1px solid var(--line); border-radius: 5px; background: var(--bg); color: var(--text); font: 14px/1.65 var(--font-body); }
+.social-compose .button { justify-self: start; margin: 0; }
+.social-compose .muted { font-size: 11px; margin: 0; }
+.social-comment, .social-report, .social-notification { padding: 22px 0; border-bottom: 1px solid var(--line); }
+.social-comment header, .social-report header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.social-comment header a, .social-notification a { color: var(--gold-light); }
+.social-comment time, .social-notification time, .social-report .muted { font-size: 11px; color: var(--muted); }
+.social-comment > p, .social-report > p { margin: 14px 0; font-size: 14px; line-height: 1.75; overflow-wrap: anywhere; }
+.comment-actions { font-size: 11px; }
+.user-social { padding: 12px 0; margin-bottom: 24px; }
+.user-social > p { font-size: 12px; margin-bottom: 12px; }
+.user-social-actions { font-size: 12px; }
+.social-report h2 { font: 500 24px var(--font-display); }
+.social-notification { position: relative; padding-left: 18px; }
+.social-notification.is-unread::before { content: ''; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); left: 0; top: 30px; }
+.social-notification p { font-size: 14px; line-height: 1.7; overflow-wrap: anywhere; margin-bottom: 12px; }
+.social-notification form, form.notification-all { width: auto; padding: 0; border: 0; background: transparent; margin: 12px 0; font-size: 12px; }
+@media (max-width: 700px) { .social-page { margin-top: 20px; } form.social-compose { padding: 16px; } .social-compose textarea { font-size: 16px; } .social-compose .button { width: 100%; } }

@@ -1,53 +1,39 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='cadastro.css') }}">
-    <link rel="shortcut icon" type="image/png" href="https://img.freepik.com/vetores-premium/letra-c-ou-iniciais-cc-ouro-luxo-dourado-elegante-elegante-simples-minimal-icone-vector-logo-design_216988-1942.jpg">
-    <title>CritiCard - Cadastro</title>
-</head>
-<body>
-    <div class="Container">
-        <header><h2>CADASTRE-SE</h2></header>
-        <form method="POST" enctype="multipart/form-data">
-            USERNAME: <input type="text" placeholder="Crie um username único..." maxlength="15" name="username" required>
-            NOME: <input type="text" name="nome" placeholder="Digite seu nome..." maxlength="15" required>
-            FOTO DE PERFIL: <label for="imagem"><img src="" alt="" id="Cadimg" class="Gosling"></label><input type="file" name="imagem" id="imagem">
-            APELIDO: <input type="text" name="apelido" maxlength="20" placeholder="Digite algo que te descreva bem para os outros..." required>
-            SOBRE MIM <textarea name="about" id="abt" placeholder="Digite uma descrição sobre você..." maxlength="2000"  rows="3" required></textarea>
-            EMAIL: <input type="email" name="email" placeholder="Digite o seu email..." required>
-            SENHA: <input type="password" name="senha" placeholder="Digite sua senha..." required>
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <h4>ERRO:</h4>
-                <ul class=flashes>
-                    {% for message in messages %}
-                    <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            {% endwith %}
-            <button type="submit" class="Botao"><b>REGISTRAR</b></button>
-    </form>
-        <a href=" {{ url_for('index') }}"><button id="Botao"><b>VOLTAR</b></button></a>
-    </div>
-    <footer>
-        <p>&copy;2025 - LD</p>
-    </footer>
-    <script>
-        const inputImagem = document.getElementById('imagem');
-        const imgPreview = document.getElementById('Cadimg');
-        inputImagem.addEventListener('change', function() {
-        const arquivo = this.files[0];
-        if (arquivo) {
-            const leitor = new FileReader();
-            leitor.onload = function(e) {
-                imgPreview.src = e.target.result;
-            };
-            leitor.readAsDataURL(arquivo);
-        }
-    });
-    </script>
-</body>
-</html>
+{% extends 'base.html' %}
+{% from 'components/form_fields.html' import attrs, error, password with context %}
+{% block title %}Criar conta · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}">{% endblock %}
+{% block content %}
+<div class="auth-layout registration-layout">
+    {% set joining = true %}{% include 'components/auth_intro.html' %}
+    <section class="auth-panel" aria-labelledby="signup-heading">
+        <p class="eyebrow">FAÇA PARTE DA COMUNIDADE</p>
+        <h2 id="signup-heading">Comece sua coleção</h2>
+        <p class="form-description">Crie seu acesso com username, email e senha. Você pode completar o perfil quando quiser.</p>
+        <form method="post" enctype="multipart/form-data" class="enhanced-form" data-validate>
+            {% include 'components/csrf.html' %}
+            {% if destination %}<input type="hidden" name="next" value="{{ destination }}">{% endif %}
+            {% include 'components/form_status.html' %}
+            <fieldset class="form-section">
+                <legend><span>01</span> Crie seu acesso</legend>
+                <div class="field-row account-identity-fields">
+                {% include 'components/username_field.html' %}
+                <div class="field">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="{{ values.get('email', '') }}" maxlength="254" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="voce@exemplo.com" {{ attrs('email', true) }} required>
+                    <small id="email-help" class="field-help">Seu email é usado para entrar e não aparece no perfil público.</small>
+                    {{ error('email') }}
+                </div>
+                </div>
+                {{ password(new=true) }}
+            </fieldset>
+            <details class="optional-profile" {% if field_errors.get('nome') or field_errors.get('apelido') or field_errors.get('about') or field_errors.get('imagem') %}open{% endif %}>
+                <summary>Personalizar meu perfil <span class="field-optional">Opcional</span></summary>
+                {% set include_email = false %}{% set include_username = false %}{% set profile_number = '02' %}{% include 'components/profile_fields.html' %}
+            </details>
+            <p class="field-help">Seu perfil é público e suas críticas são públicas. Email e senha ficam privados. <a href="{{ url_for('privacy.policy') }}">Veja como usamos seus dados.</a></p>
+            <button class="button form-submit" type="submit">Criar minha conta {% include 'icons/arrow-right.svg' %}</button>
+        </form>
+        <p class="auth-switch">Já faz parte? <a href="{{ url_for('auth.index', next=destination) if destination else url_for('auth.index') }}">Entre na sua conta</a></p>
+    </section>
+</div>
+{% endblock %}

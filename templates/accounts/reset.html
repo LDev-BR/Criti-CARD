@@ -1,0 +1,14 @@
+{% extends 'accounts/layout.html' %}
+{% from 'components/form_fields.html' import attrs, error, password with context %}
+{% block title %}Nova senha · Criti-CARD{% endblock %}
+{% block eyebrow %}UM NOVO COMEÇO{% endblock %}
+{% block heading %}Escolha sua nova senha{% endblock %}
+{% block account_content %}
+<p class="form-description">Depois de salvar, entre novamente. Os acessos anteriores à sua conta serão encerrados.</p>
+<form method="post" class="enhanced-form" data-validate>
+    {% include 'components/csrf.html' %}<p class="form-status" data-form-status role="alert" hidden></p>
+    {{ password(new=true) }}
+    <div class="field"><label for="senha_confirmacao">Confirmar nova senha</label><input id="senha_confirmacao" name="senha_confirmacao" type="password" autocomplete="new-password" minlength="8" maxlength="128" {{ attrs('senha_confirmacao') }} required>{{ error('senha_confirmacao') }}</div>
+    <button class="button form-submit" type="submit">Salvar nova senha {% include 'icons/check.svg' %}</button>
+</form>
+{% endblock %}

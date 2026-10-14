@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% block title %}{{ tab_meta.title }} · Criti-CARD{% endblock %}
+{% block content %}
+<header class="connections-heading"><h1>Conexões</h1><p class="muted">Pessoas que tornam suas descobertas melhores.</p></header>
+<p class="connections-feedback" data-connections-status role="status" hidden></p>
+<div data-live-search="connections">
+{% include 'components/live_search_feedback.html' %}
+<div data-live-body>
+<div class="connections-layout" data-connections-fragment>
+    <aside class="connections-sidebar" aria-label="Suas conexões">
+        <details class="section-disclosure" data-responsive-disclosure>
+        <summary>{{ icon('users') }}<span>Listas · {{ tabs[active_tab].label }}</span>{{ icon('chevron-down') }}</summary>
+        <nav class="connections-nav" aria-label="Listas de pessoas">
+            <a href="{{ url_for('people.connections', aba='amigos') }}" {% if active_tab == 'amigos' %}aria-current="page"{% endif %}>{{ icon('users') }}<span>Amigos</span><span class="connection-count">{{ counts.friends }}</span></a>
+            <span class="connections-group">{{ icon('user-plus') }} Solicitações <span class="connection-count">{{ counts.incoming }}</span></span>
+            {% for slug in ('recebidas','enviadas') %}<a class="connections-subtab" href="{{ url_for('people.connections', aba=slug) }}" {% if active_tab == slug %}aria-current="page"{% endif %}><span>{{ tabs[slug].label }}</span><span class="connection-count">{{ counts[tabs[slug].key] }}</span></a>{% endfor %}
+            <div class="connections-divider"></div>
+            {% for slug in ('seguindo','seguidores','descobrir') %}<a href="{{ url_for('people.connections', aba=slug) }}" {% if active_tab == slug %}aria-current="page"{% endif %}>{{ icon(tabs[slug].icon) }}<span>{{ tabs[slug].label }}</span>{% if slug != 'descobrir' %}<span class="connection-count">{{ counts[tabs[slug].key] }}</span>{% endif %}</a>{% endfor %}
+        </nav>
+        <p class="connections-note">{{ icon('info') }} Amizade é por convite. Seguir é independente.</p>
+        </details>
+    </aside>
+    <section class="connections-content" aria-labelledby="connections-title">
+        <header class="connections-toolbar">
+            <div><h2 id="connections-title" tabindex="-1" data-live-results-heading data-live-count="{{ total }}">{{ tab_meta.title }}</h2><p class="muted">{{ tab_meta.description }}</p></div>
+            <form class="connections-search" method="get" action="{{ url_for('people.connections') }}" role="search">
+                <input type="hidden" name="aba" value="{{ active_tab }}">
+                <label class="visually-hidden" for="connections-search">Buscar por nome ou usuário</label>
+                <input id="connections-search" name="q" value="{{ query }}" maxlength="120" placeholder="Buscar por nome ou @usuário" type="search">
+                <button class="connection-search-button" type="submit" aria-label="Buscar pessoas">{{ icon('search') }}</button>
+            </form>
+        </header>
+        {% if query %}<p class="connections-result"><span>{{ total }} {{ 'pessoa encontrada' if total == 1 else 'pessoas encontradas' }} para “{{ query }}”</span><a href="{{ url_for('people.connections', aba=active_tab) }}">Limpar busca {{ icon('close') }}</a></p>{% endif %}
+        <ul class="connection-list" aria-label="{{ tab_meta.title }}">
+            {% for person in people %}{% include 'social/person_row.html' %}
+            {% else %}
+            <li class="connections-empty">
+                <span class="connections-empty-icon">{{ icon('search' if query else tab_meta.icon) }}</span>
+                <h3>{{ 'Nenhuma pessoa encontrada.' if query else tab_meta.empty }}</h3>
+                <p class="muted">{{ 'Tente outro nome ou remova a busca para ver a lista completa.' if query else tab_meta.hint }}</p>
+                {% if query %}<a class="button secondary small" href="{{ url_for('people.connections', aba=active_tab) }}">{{ icon('close') }} Limpar busca</a>
+                {% elif active_tab != 'descobrir' %}<a class="button secondary small" href="{{ url_for('people.connections', aba='descobrir') }}">{{ icon('search') }} Encontrar pessoas</a>{% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% if pages > 1 %}<nav class="pagination" aria-label="Páginas de pessoas">{% if page > 1 %}<a href="{{ url_for('people.connections', aba=active_tab, q=query, page=page-1) }}">{{ icon('chevron-left') }} Anterior</a>{% endif %}<span>{{ page }} de {{ pages }}</span>{% if page < pages %}<a href="{{ url_for('people.connections', aba=active_tab, q=query, page=page+1) }}">Próxima {{ icon('chevron-right') }}</a>{% endif %}</nav>{% endif %}
+    </section>
+</div>
+</div></div>
+{% endblock %}

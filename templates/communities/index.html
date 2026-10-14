@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% block title %}Comunidades · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='community.css') }}">{% endblock %}
+{% block content %}
+<section class="communities-page">
+    <header class="communities-hero"><p class="eyebrow">CONVERSAS POR TEMA</p><h1>Encontre sua comunidade.</h1><p>Espaços para compartilhar publicações, trocar ideias e conversar sobre o que você gosta.</p></header>
+    {% if usuario_atual %}
+    {% if invites %}<section class="community-invites" aria-labelledby="community-invites-title"><h2 id="community-invites-title">Seus convites</h2>{% for invite in invites %}<article><a href="{{ url_for('communities.detail', slug=invite.community_slug) }}">{{ invite.community_name }}</a><div class="community-actions"><form method="post" action="{{ url_for('communities.resolve_invite', invite_id=invite.id, action='aceitar') }}">{% include 'components/csrf.html' %}<button class="button small" type="submit">Aceitar</button></form><form method="post" action="{{ url_for('communities.resolve_invite', invite_id=invite.id, action='recusar') }}">{% include 'components/csrf.html' %}<button class="button secondary small" type="submit">Recusar</button></form></div></article>{% endfor %}</section>{% endif %}
+    <details class="community-create"><summary><span><strong>Crie sua comunidade</strong><small>Personalize o espaço e defina quem pode entrar.</small></span><span class="community-create-mark">+</span></summary>
+        {% if progress.eligible %}
+        <form method="post" action="{{ url_for('communities.create') }}" enctype="multipart/form-data" class="community-form">{% include 'components/csrf.html' %}
+            <label>Nome<input name="name" maxlength="80" required></label><label>Descrição<textarea name="description" maxlength="1000" rows="3"></textarea></label>
+            <div class="community-form-grid"><label>Acesso<select name="mode"><option value="open">Aberta</option><option value="closed">Fechada: convite ou aprovação</option></select></label><label>Nível mínimo<input name="minimum_level" type="number" min="1" max="999" value="1" required></label><label>Tema visual<select name="theme">{% for theme in themes %}<option value="{{ theme }}">{{ theme|capitalize }}</option>{% endfor %}</select></label><label>Ícone<select name="icon">{% for icon_name in icons %}<option value="{{ icon_name }}">{{ icon_name|capitalize }}</option>{% endfor %}</select></label></div>
+            <label>Capa opcional (PNG, JPG ou GIF; até 3 MB)<input name="cover" type="file" accept="image/png,image/jpeg,image/gif"></label><button class="button" type="submit">Criar comunidade</button>
+        </form>
+        {% else %}<p class="community-gate">{% if progress.reason == 'no_contribution' %}A criação é liberada depois de 7 dias desde sua primeira contribuição. Faça uma contribuição para começar a contagem.{% else %}A criação de comunidades será liberada em {{ '%.1f'|format(progress.hours_remaining / 24) }} dia(s), após 7 dias desde sua primeira contribuição.{% endif %}</p>{% endif %}
+    </details>
+    {% endif %}
+    <div class="community-list-heading"><div><p class="eyebrow">ESPAÇOS DO CRITI-CARD</p><h2>Comunidades temáticas</h2></div><span>{{ communities|length }} comunidades</span></div>
+    <div class="community-grid">
+    {% for item in communities %}
+        <article class="community-card theme-{{ item.theme }}">
+            <a class="community-card-main" href="{{ url_for('communities.detail', slug=item.slug) }}"><span class="community-card-icon" aria-hidden="true">{{ {'sparkles':'✦','book':'▤','film':'▣','music':'♫','game':'◇','chat':'☰','heart':'♡','star':'☆'}.get(item.icon, '✦') }}</span><span class="community-card-type">{{ item.category_name or ('Criada por membros' if not item.seeded else 'Temática') }} · {{ 'Aberta' if item.mode == 'open' else 'Fechada' }}</span><h3>{{ item.name }}</h3>{% if item.mode == 'open' %}<p>{{ item.description or 'Um espaço para compartilhar ideias e conversar.' }}</p>{% else %}<p>Conteúdo visível para membros</p>{% endif %}<span class="community-card-members">{% if item.mode == 'open' or item.my_role %}{{ item.member_count }} membros · {% endif %}nível {{ item.minimum_level }}+{% if item.my_role %} · {{ item.my_role|capitalize }}{% endif %}</span></a>
+            {% if usuario_atual %}{% if item.my_role %}<form method="post" action="{{ url_for('communities.leave', slug=item.slug) }}">{% include 'components/csrf.html' %}<button class="text-button" type="submit">Sair</button></form>{% elif item.mode == 'open' %}<form method="post" action="{{ url_for('communities.join', slug=item.slug) }}">{% include 'components/csrf.html' %}<button class="button small" type="submit">Entrar</button></form>{% else %}<a class="button secondary small" href="{{ url_for('communities.detail', slug=item.slug) }}">Ver acesso</a>{% endif %}{% endif %}
+        </article>
+    {% else %}<p class="muted">Ainda não há comunidades cadastradas.</p>{% endfor %}
+    </div>
+</section>
+{% endblock %}

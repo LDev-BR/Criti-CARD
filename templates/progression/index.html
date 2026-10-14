@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Minha jornada · Criti-CARD{% endblock %}
+{% block scripts %}<script src="{{ url_for('static',filename='progression.js') }}" type="module"></script>{% endblock %}
+{% block content %}
+<div class="journey" data-journey data-sync-url="{{ url_for('progression.sync') }}">
+    <header class="journey-heading"><div><p class="eyebrow">CADA HISTÓRIA DEIXA UMA MARCA</p><h1>Minha jornada</h1><p class="muted">Sua contribuição, seu tempo e sua identidade na comunidade.</p></div><a class="button secondary small" href="{{ url_for('settings.index',secao='jornada') }}">{% include 'icons/settings.svg' %} Preferências</a></header>
+    {% include 'progression/summary.html' %}
+    <nav class="journey-links" aria-label="Seções da jornada"><a href="#personalizar">{% include 'icons/sparkles.svg' %} Personalizar</a><a href="#conquistas">{% include 'icons/award.svg' %} Conquistas</a><a href="#extrato">{% include 'icons/layers.svg' %} Extrato privado</a></nav>
+    <p class="journey-status" data-journey-status role="status" aria-live="polite"></p>
+    <form class="journey-sync" action="{{ url_for('progression.sync') }}" method="post">{% include 'components/csrf.html' %}<button type="submit" class="text-button">{% include 'icons/reset.svg' %} Atualizar marcos de permanência</button></form>
+    {% include 'progression/rewards.html' %}
+    {% include 'progression/achievements.html' %}
+    {% include 'progression/events.html' %}
+    <details class="journey-panel journey-rules"><summary>Como ganhar XP {% include 'icons/chevron-down.svg' %}</summary><div class="journey-panel-body">
+        <dl class="xp-rules"><div><dt>Primeira crítica de uma obra</dt><dd>40 XP</dd></div><div><dt>Primeira conclusão no backlog</dt><dd>15 XP</dd></div><div><dt>Participação em uma semana</dt><dd>10 XP</dd></div><div><dt>30 / 90 / 180 dias de conta</dt><dd>50 / 100 / 150 XP</dd></div><div><dt>Primeiro aniversário / seguintes</dt><dd>250 / 500 XP</dd></div></dl>
+        <p class="muted">Uma crítica, alteração real no backlog ou comentário válido conta como participação semanal. Não precisa de sequência. Curtidas, visitas e mensagens não geram XP.</p>
+        <p class="muted">O limite é 200 XP por dia UTC. Um ganho pode ser parcial ou zero; a origem continua consumida e não acumula crédito para outro dia. Editar, excluir e recriar não repetem prêmios. Permanência e histórico ficam fora da cota.</p>
+        <p class="muted">A curva tem 100 níveis iniciais, dez tiers e progresso contínuo depois do nível 100. O nível 3 começa em 250 XP e o nível 6 em 600 XP. Acesso a chats e comunidades também depende do tempo e dos dias de contribuição; recompensas visuais não alteram permissões.</p>
+    </div></details>
+</div>
+{% endblock %}

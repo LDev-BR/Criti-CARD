@@ -1,0 +1,9 @@
+{% if usuario_atual and c.author_id == usuario_atual.id %}
+    <div class="owner-actions">
+        <a href="{{ url_for('cards.edit_card', id=c.id) }}" aria-label="Editar card: {{ c.titulo }}">{% include 'icons/edit.svg' %}<span>Editar</span></a>
+        <form action="{{ url_for('cards.deletar_card', id=c.id) }}" method="post" class="card-actions" data-confirm="Excluir este card?">
+            {% include 'components/csrf.html' %}
+            <button type="submit" class="text-button danger-link" aria-label="Excluir card: {{ c.titulo }}">{% include 'icons/trash.svg' %}<span>Excluir card</span></button>
+        </form>
+    </div>
+{% endif %}

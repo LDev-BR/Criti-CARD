@@ -1,0 +1,22 @@
+/* Identity and optional biography stay close to the published collection. */
+.profile-summary { gap: 16px; padding-top: 0; }
+.profile-summary > div { min-width: 0; }
+.profile-summary h1 { font-size: clamp(28px, 3.2vw, 42px); line-height: 1.1; overflow-wrap: anywhere; }
+.profile-summary .avatar { width: 72px; height: 72px; padding: 3px; }
+.profile-bio { margin: 16px 0 20px; }
+.profile-links { margin-block: 16px; gap: 10px; flex-wrap: wrap; }
+.profile-links > .button, .profile-links button, .admin-nav a { min-height: 44px; }
+.profile-about { margin-block: 14px; max-width: 760px; border-bottom: 1px solid var(--line); }
+.profile-about > summary { display: flex; align-items: center; gap: 12px; min-height: 44px; width: fit-content; color: var(--gold-light); }
+.profile-about .icon { width: 16px; height: 16px; }
+.profile-about[open] > summary .icon { transform: rotate(180deg); }
+.admin-nav { display: flex; flex-wrap: wrap; gap: 14px; padding-block: 4px 12px; }
+.section-heading { margin-block: 24px 16px; gap: 12px; }
+.support { margin-top: 28px; }
+@media (max-width: 600px) {
+    .profile-summary { flex-wrap: wrap; gap: 12px; }
+    .profile-summary .avatar { width: 60px; height: 60px; }
+    .profile-summary > div { flex: 1; }
+    .profile-summary .button { min-height: 44px; }
+    .profile-links > .button { flex: 1; justify-content: center; }
+}

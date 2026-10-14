@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Grupos de conversa · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static',filename='chat.css') }}">{% endblock %}
+{% block content %}
+<section class="chat-groups-page">
+    <header class="chat-groups-heading"><div><p class="eyebrow">CONVERSAS POR INTERESSE</p><h1>Grupos de conversa</h1><p class="muted">Encontre pessoas que gostam das mesmas histórias e converse em espaços com regras claras.</p></div><a class="button secondary" href="{{ url_for('chat.index') }}">{% include 'icons/chevron-left.svg' %} Mensagens</a></header>
+
+    <section class="chat-group-create" aria-labelledby="chat-group-create-title">
+        <div><p class="eyebrow">SEU ESPAÇO, SUAS REGRAS</p><h2 id="chat-group-create-title">Criar um grupo</h2><p class="muted">Depois de 600 XP, três dias de cota completa e 48 horas desde sua primeira contribuição.</p></div>
+        {% if create_access.eligible %}
+        <form method="post" action="{{ url_for('chat.create_group') }}" class="chat-group-form">
+            {% include 'components/csrf.html' %}
+            <label>Nome<input name="name" maxlength="60" minlength="3" required placeholder="Ex.: Clube de ficção científica"></label>
+            <label>Descrição<textarea name="description" maxlength="500" rows="3" placeholder="Sobre o que vocês querem conversar?"></textarea></label>
+            <div class="chat-group-form-grid">
+                <label>Acesso<select name="mode"><option value="open">Aberto · entrada elegível</option><option value="closed">Fechado · convite ou aprovação</option></select></label>
+                <label>Nível mínimo<input type="number" name="minimum_level" min="1" max="999" value="1" required></label>
+                <label>Identidade visual<select name="visual_token">{% for visual in visuals %}<option value="{{ visual }}">{{ visual|capitalize }}</option>{% endfor %}</select></label>
+            </div>
+            <p class="muted">O nível mínimo pode elevar o requisito de entrada. Ele nunca reduz os requisitos gerais do Criti-CARD.</p>
+            <button class="button" type="submit">Criar grupo</button>
+        </form>
+        {% else %}
+        <div class="chat-group-locked" role="status">
+            {% if create_access.reason == 'no_contribution' %}<strong>Faça sua primeira contribuição válida para iniciar o prazo.</strong>
+            {% else %}<strong>Seu progresso: {{ create_access.current_xp }}/{{ create_access.required_xp }} XP · nível {{ create_access.current_level }}/{{ create_access.required_level }} · {{ create_access.full_cap_days }}/3 dias completos{% if create_access.hours_remaining %} · {{ create_access.hours_remaining }} h{% endif %}.</strong>{% endif %}
+            <a href="{{ url_for('progression.index') }}">Acompanhar Minha jornada</a>
+        </div>
+        {% endif %}
+    </section>
+
+    {% if invites %}<section class="chat-group-invites" aria-labelledby="chat-group-invites-title"><h2 id="chat-group-invites-title">Convites para você</h2><ul>{% for group in invites %}<li><div><strong>{{ group.name }}</strong><span class="muted">{{ 'Fechado' if group.mode == 'closed' else 'Aberto' }} · nível {{ group.minimum_level }}+</span></div><div class="chat-group-invite-actions"><form method="post" action="{{ url_for('chat.accept_group_invite',invite_id=group.invite_id) }}">{% include 'components/csrf.html' %}<button class="button secondary" type="submit" {% if not group.can_join %}disabled title="{{ group.access_reason }}"{% endif %}>Aceitar</button></form><form method="post" action="{{ url_for('chat.decline_group_invite',invite_id=group.invite_id) }}">{% include 'components/csrf.html' %}<button class="text-button" type="submit">Recusar</button></form></div></li>{% endfor %}</ul></section>{% endif %}
+
+    <header class="chat-group-list-heading"><div><p class="eyebrow">DESCUBRA</p><h2>Grupos disponíveis</h2></div><form method="get" action="{{ url_for('chat.groups') }}" class="chat-group-search"><label class="visually-hidden" for="chat-group-query">Buscar grupos</label><input id="chat-group-query" name="q" value="{{ search }}" maxlength="60" placeholder="Buscar por nome"><button class="button secondary" type="submit">Buscar</button></form></header>
+    <div class="chat-group-grid">
+    {% for group in groups %}
+        <article class="chat-group-card chat-group-card--{{ group.visual_token }}">
+            <header><span class="chat-group-avatar" aria-hidden="true">{{ group.name[:1]|upper }}</span><div><h3>{{ group.name }}</h3><p>{{ 'Aberto' if group.mode == 'open' else 'Fechado' }}{% if group.member_count is not none %} · {{ group.member_count }} participantes{% endif %}</p></div></header>
+            {% if group.description %}<p class="chat-group-card-description">{{ group.description }}</p>{% elif group.mode == 'closed' %}<p class="chat-group-card-description muted">A descrição e as conversas ficam visíveis após a entrada.</p>{% else %}<p class="chat-group-card-description muted">Um espaço para conversar sobre interesses em comum.</p>{% endif %}
+            <p class="chat-group-requirement">Nível mínimo {{ group.minimum_level }}{% if group.mode == 'open' %} · Entrada aberta{% else %} · Convite ou aprovação{% endif %}</p>
+            <footer>
+                {% if group.joined %}<a class="button secondary" href="{{ url_for('chat.detail',conversation_id=group.id) }}">Abrir conversa</a>
+                {% elif group.request_pending %}<div class="chat-group-pending"><span class="chat-group-state">Solicitação aguardando aprovação</span><form method="post" action="{{ url_for('chat.cancel_group_request',conversation_id=group.id) }}">{% include 'components/csrf.html' %}<button class="text-button" type="submit">Cancelar</button></form></div>
+                {% elif group.invite_id %}<form method="post" action="{{ url_for('chat.accept_group_invite',invite_id=group.invite_id) }}">{% include 'components/csrf.html' %}<button class="button" type="submit" {% if not group.can_join %}disabled{% endif %}>Aceitar convite</button></form>
+                {% elif group.mode == 'open' and group.can_join %}<form method="post" action="{{ url_for('chat.join_group',conversation_id=group.id) }}">{% include 'components/csrf.html' %}<button class="button" type="submit">Entrar no grupo</button></form>
+                {% elif group.mode == 'closed' and group.can_join %}<form method="post" action="{{ url_for('chat.request_group_access',conversation_id=group.id) }}">{% include 'components/csrf.html' %}<button class="button" type="submit">Solicitar entrada</button></form>
+                {% else %}<span class="chat-group-state">{% if group.access_reason == 'no_contribution' %}Comece contribuindo no Criti-CARD{% elif group.access_reason == 'time' %}{{ group.hours_remaining }} h desde a primeira contribuição{% elif group.access_reason == 'cap_days' %}{{ group.full_cap_days }}/3 dias de cota completa{% else %}Nível {{ group.required_level }} e {{ group.required_xp }} XP{% endif %}</span>{% endif %}
+            </footer>
+        </article>
+    {% else %}<p class="chat-list-empty">Nenhum grupo encontrado. Você pode criar o primeiro quando liberar esse recurso.</p>{% endfor %}
+    </div>
+</section>
+{% endblock %}

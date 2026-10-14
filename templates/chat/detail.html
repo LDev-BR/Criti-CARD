@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}{{ conversation.group.name if conversation.group else ('Conversa com ' ~ conversation.peer.name if conversation.peer else 'conta excluída') }} · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static',filename='chat.css') }}">{% endblock %}
+{% block scripts %}<script src="{{ url_for('static',filename='vendor/socket.io.min.js') }}" defer></script><script src="{{ url_for('static',filename='chat.js') }}" type="module"></script>{% endblock %}
+{% block content %}
+{% set group = conversation.group %}
+{% set can_manage = group and group.role in ('owner','moderator') %}
+<section class="chat-home chat-detail">
+    <header class="chat-intro"><p class="eyebrow">TROQUE IDEIAS</p><h1>Mensagens</h1><p class="muted">Conversas privadas e grupos com interesses em comum.</p></header>
+    <div class="chat-workspace">
+        {% include 'chat/sidebar.html' %}
+        <section class="chat-thread{% if group %} is-group-thread{% endif %}" data-chat-conversation="{{ conversation.id }}" data-chat-user="{{ usuario_atual.id }}" data-chat-last-read="{{ conversation.last_read_id or 0 }}" data-chat-initial-latest="{{ conversation.last_message.id if conversation.last_message else 0 }}" data-chat-unread="{{ conversation.unread_count }}" aria-label="{{ group.name if group else ('Conversa com ' ~ conversation.peer.name if conversation.peer else 'Conversa com conta excluída') }}">
+            <a class="back-link chat-back" href="{{ url_for('chat.index') }}">{% include 'icons/chevron-left.svg' %} Todas as conversas</a>
+            <header class="chat-thread-heading">
+                {% if group %}<span class="chat-group-avatar chat-group-avatar--{{ group.visual_token }}" aria-hidden="true">{{ group.name[:1]|upper }}</span>
+                {% else %}<img class="chat-avatar" src="{{ conversation.peer.avatar_url if conversation.peer else url_for('static',filename='default-avatar.svg') }}" alt="" width="48" height="48">{% endif %}
+                <div class="chat-peer"><h2>{{ group.name if group else (conversation.peer.name if conversation.peer else 'Conta excluída') }}</h2>
+                    {% if group %}<span class="muted">{{ group.member_count }} participantes · {{ 'Grupo aberto' if group.mode=='open' else 'Grupo fechado' }} · nível {{ group.minimum_level }}+</span>
+                    {% elif conversation.peer %}<a href="{{ url_for('community.profile',username=conversation.peer.username) }}">@{{ conversation.peer.username }} {% include 'icons/arrow-right.svg' %}</a>{% else %}<span class="muted">Histórico preservado</span>{% endif %}</div>
+                <p class="chat-connection muted" data-chat-status role="status">Histórico salvo</p>
+            </header>
+            {% if group %}
+            <details class="chat-group-details"><summary>Detalhes e participantes <span>{{ group.member_count }}</span>{% include 'icons/chevron-down.svg' %}</summary>
+                <div class="chat-group-details-body"><div class="chat-group-description"><span class="chat-group-avatar chat-group-avatar--{{ group.visual_token }}" aria-hidden="true">{{ group.name[:1]|upper }}</span><div><strong>{{ group.name }}</strong><p>{{ group.description or 'Um espaço para trocar ideias sobre interesses em comum.' }}</p><span class="muted">{{ 'Entrada aberta' if group.mode=='open' else 'Acesso por convite ou aprovação' }} · nível mínimo {{ group.minimum_level }}</span></div></div>
+                    {% if can_manage %}
+                    <form class="chat-group-inline-form" method="post" action="{{ url_for('chat.invite_group',conversation_id=conversation.id) }}">{% include 'components/csrf.html' %}<label for="group-invite-user">Convidar pelo nome de usuário</label><div><input id="group-invite-user" name="target_username" maxlength="80" placeholder="@usuário" required><button class="button secondary" type="submit">Convidar</button></div></form>
+                    <details class="chat-group-settings"><summary>Configurações do grupo</summary><form method="post" action="{{ url_for('chat.update_group',conversation_id=conversation.id) }}">{% include 'components/csrf.html' %}<label for="group-name">Nome</label><input id="group-name" name="name" value="{{ group.name }}" maxlength="60" minlength="3" required><label for="group-description">Descrição</label><textarea id="group-description" name="description" rows="2" maxlength="500">{{ group.description }}</textarea><div class="chat-group-form-grid"><label>Acesso<select name="mode"><option value="open" {% if group.mode=='open' %}selected{% endif %}>Aberto</option><option value="closed" {% if group.mode=='closed' %}selected{% endif %}>Fechado</option></select></label><label>Nível mínimo<input type="number" name="minimum_level" min="1" max="999" value="{{ group.minimum_level }}"></label><label>Identidade visual<select name="visual_token">{% for visual in ['gold','ocean','violet','emerald','ruby'] %}<option value="{{ visual }}" {% if group.visual_token==visual %}selected{% endif %}>{{ visual|capitalize }}</option>{% endfor %}</select></label></div><button class="button secondary" type="submit">Salvar configurações</button></form></details>
+                    {% endif %}
+                    {% if group.pending_requests %}<section class="chat-group-requests"><h3>Solicitações de entrada</h3>{% for join_request in group.pending_requests %}<div class="chat-group-request"><span>@{{ join_request.username }}</span><div><form method="post" action="{{ url_for('chat.resolve_group_request',request_id=join_request.id) }}">{% include 'components/csrf.html' %}<input type="hidden" name="approve" value="true"><button class="button secondary" type="submit">Aprovar</button></form><form method="post" action="{{ url_for('chat.resolve_group_request',request_id=join_request.id) }}">{% include 'components/csrf.html' %}<input type="hidden" name="approve" value="false"><button class="text-button" type="submit">Recusar</button></form></div></div>{% endfor %}</section>{% endif %}
+                    <ul class="chat-group-members" aria-label="Participantes">{% for member in group.members %}<li><img src="{{ member.avatar_url }}" alt="" width="34" height="34"><span><strong>{{ member.name }}</strong><small>@{{ member.username }} · {{ {'owner':'Proprietário','moderator':'Moderador','member':'Participante'}[member.role] }}</small></span>{% if can_manage and member.id != group.owner_id %}<div class="chat-group-member-actions">{% if group.role=='owner' %}<form method="post" action="{{ url_for('chat.set_group_role',conversation_id=conversation.id,target_id=member.id) }}">{% include 'components/csrf.html' %}<input type="hidden" name="role" value="{{ 'member' if member.role=='moderator' else 'moderator' }}"><button class="text-button" type="submit">{{ 'Retirar moderação' if member.role=='moderator' else 'Tornar moderador' }}</button></form>{% endif %}<form method="post" action="{{ url_for('chat.remove_group_member',conversation_id=conversation.id,target_id=member.id) }}">{% include 'components/csrf.html' %}<button class="text-button" type="submit">Remover</button></form></div>{% endif %}</li>{% endfor %}</ul>
+                    <form class="chat-group-leave" method="post" action="{{ url_for('chat.leave_group',conversation_id=conversation.id) }}">{% include 'components/csrf.html' %}<button class="text-button" type="submit">Sair do grupo</button></form>
+                </div>
+            </details>
+            {% endif %}
+            <div class="chat-history">
+                {% if has_more %}<a class="chat-older" data-chat-older href="{{ url_for('chat.detail',conversation_id=conversation.id,before_id=before_id) }}">{% include 'icons/chevron-up.svg' %} Carregar mensagens anteriores</a>{% endif %}
+                <ol class="chat-messages" data-chat-messages aria-label="Mensagens da conversa" aria-live="polite" aria-relevant="additions" tabindex="0">
+                {% for message in messages %}
+                    <li class="chat-message{{ ' is-own' if message.sender and message.sender.id==usuario_atual.id else '' }}" data-message-id="{{ message.id }}" data-message-nonce="{{ message.client_nonce }}"><div class="chat-bubble"><strong>{{ message.sender.name if message.sender else 'Conta excluída' }}</strong><p>{{ message.body }}</p><time datetime="{{ message.created_at }}">{{ message.created_at[:16]|replace('T',' · ') }} UTC</time>{% if group %}<div class="chat-message-actions"><a href="{{ url_for('social.report',target_type='chat_message',target_id=message.id) }}">Denunciar</a>{% if can_manage and not message.redacted %}<form method="post" action="{{ url_for('chat.moderate_message',message_id=message.id) }}">{% include 'components/csrf.html' %}<button class="text-button" type="submit">Remover mensagem</button></form>{% endif %}</div>{% endif %}</div></li>
+                {% else %}<li class="chat-empty" data-chat-empty><span aria-hidden="true">{% include 'icons/message.svg' %}</span><h3>A primeira ideia é sua.</h3><p>Uma obra marcante pode ser o começo de uma boa conversa.</p></li>{% endfor %}
+                </ol>
+                <button class="chat-new-messages" data-chat-new-messages type="button" hidden>Novas mensagens {% include 'icons/chevron-down.svg' %}</button>
+            </div>
+            {% if messages %}<form method="post" action="{{ url_for('chat.read',conversation_id=conversation.id) }}" data-chat-read>{% include 'components/csrf.html' %}<input type="hidden" name="message_id" value="{{ messages[-1].id }}"><button type="submit" class="text-button">Marcar mensagens como lidas</button></form>{% endif %}
+            {% if can_send %}
+            <form class="chat-compose" method="post" action="{{ url_for('chat.send',conversation_id=conversation.id) }}" data-chat-form>
+                {% include 'components/csrf.html' %}<input type="hidden" name="client_nonce" value="{{ nonce }}">
+                <label class="visually-hidden" for="chat-body">Sua mensagem</label><textarea id="chat-body" name="body" rows="2" maxlength="2000" required placeholder="Compartilhe uma ideia…" aria-describedby="chat-error chat-compose-help chat-counter"></textarea>
+                <p id="chat-error" class="field-error" data-chat-error role="alert" hidden></p>
+                <div class="chat-compose-actions"><div><small id="chat-compose-help" class="muted">Clique em Enviar para compartilhar sua mensagem.</small><span id="chat-counter" class="chat-counter muted" data-chat-counter>0 / 2000</span></div><button type="submit" class="button"><span data-chat-send-label>Enviar</span> {% include 'icons/send.svg' %}</button></div>
+                <p class="visually-hidden" data-chat-send-status role="status"></p>
+            </form>
+            {% elif conversation.peer %}<p class="chat-deleted muted" role="status">Esta pessoa restringiu o recebimento de mensagens. Seu histórico continua disponível.</p>
+            {% else %}<p class="chat-deleted muted">Esta conta foi excluída. O histórico permanece disponível para você.</p>{% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}

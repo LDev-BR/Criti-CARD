@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Denunciar · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='social.css') }}">{% endblock %}
+{% block content %}
+<section class="social-page"><p class="eyebrow">CUIDAR DA COMUNIDADE</p><h1>Enviar denúncia</h1><p class="muted">Descreva o problema para a equipe de moderação. Sua denúncia não fica pública.</p>
+<form class="social-compose" method="post" action="{{ url_for('social.report') }}">
+    {% include 'components/csrf.html' %}
+    <input type="hidden" name="target_type" value="{{ target_type }}"><input type="hidden" name="target_id" value="{{ target_id }}">
+    <label for="report-reason">Motivo da denúncia</label><textarea id="report-reason" name="reason" rows="6" maxlength="2000" required></textarea>
+    <button class="button" type="submit">Enviar denúncia</button>
+</form></section>
+{% endblock %}

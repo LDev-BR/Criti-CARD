@@ -1,0 +1,38 @@
+<aside class="chat-sidebar" data-chat-sidebar aria-label="Suas conversas">
+    <header class="chat-sidebar-heading"><h2>Conversas</h2><a class="chat-group-explore" href="{{ url_for('chat.groups') }}">Grupos {% include 'icons/arrow-right.svg' %}</a>{% if unread_count %}<span class="chat-count" data-chat-total-unread aria-label="{{ unread_count }} mensagens não lidas">{{ unread_count }}</span>{% endif %}</header>
+    <details class="chat-start-panel" data-chat-start-panel {% if conversation is not defined %}open{% endif %}>
+        <summary>{% include 'icons/plus.svg' %} Nova conversa {% include 'icons/chevron-down.svg' %}</summary>
+        <form class="chat-start" method="post" action="{{ url_for('chat.start') }}" data-chat-start>
+            {% include 'components/csrf.html' %}
+            <div class="field chat-contact-field">
+                <label for="chat-target">Encontre uma pessoa</label>
+                <input id="chat-target" name="target_username" required maxlength="80" placeholder="Nome ou @usuário" autocomplete="off" aria-describedby="chat-contact-help" data-chat-contact-input>
+                <input type="hidden" name="target_id" disabled data-chat-contact-id>
+                <ul id="chat-contact-results" class="chat-contact-results" role="listbox" aria-label="Pessoas encontradas" data-chat-contact-results hidden></ul>
+                <p class="chat-contact-status" role="status" data-chat-contact-status hidden></p>
+                <small id="chat-contact-help" class="muted">Sem JavaScript, informe o @usuário completo.</small>
+            </div>
+            <button type="submit" class="button secondary">Conversar {% include 'icons/send.svg' %}</button>
+        </form>
+    </details>
+    <div class="chat-list-search" data-chat-filter-wrap hidden>
+        <label class="visually-hidden" for="chat-filter">Buscar nas conversas</label>
+        {% include 'icons/search.svg' %}<input id="chat-filter" type="search" placeholder="Buscar nas conversas" autocomplete="off" data-chat-filter>
+    </div>
+    <ul class="chat-conversations" data-chat-list aria-label="Lista de conversas">
+    {% for item in conversations %}
+        <li data-chat-list-item data-chat-list-id="{{ item.id }}" data-chat-search="{{ item.group.name if item.group else (item.peer.name ~ ' ' ~ item.peer.username if item.peer else 'Conta excluída') }}">
+            <a href="{{ url_for('chat.detail', conversation_id=item.id) }}" {% if conversation is defined and conversation.id == item.id %}aria-current="page"{% endif %}>
+                {% if item.group %}<span class="chat-group-avatar chat-group-avatar--{{ item.group.visual_token }}" aria-hidden="true">{{ item.group.name[:1]|upper }}</span>{% else %}<img class="chat-avatar" src="{{ item.peer.avatar_url if item.peer else url_for('static', filename='default-avatar.svg') }}" alt="" width="44" height="44" loading="lazy">{% endif %}
+                <div class="chat-conversation-copy">
+                    <div class="chat-conversation-top"><strong>{{ item.group.name if item.group else (item.peer.name if item.peer else 'Conta excluída') }}</strong>{% if item.last_message %}<time datetime="{{ item.last_message.created_at }}" data-chat-list-time>{{ item.last_message.created_at[:10] }}</time>{% endif %}</div>
+                    <span class="chat-handle">{% if item.group %}{{ item.group.member_count }} participantes{% else %}{{ '@' ~ item.peer.username if item.peer else 'Histórico preservado' }}{% endif %}</span>
+                    <div class="chat-conversation-bottom"><p data-chat-preview>{% if item.last_message %}{{ (item.last_message.sender.name ~ ': ') if item.group and item.last_message.sender else '' }}{{ item.last_message.body }}{% else %}Comece compartilhando uma ideia.{% endif %}</p>{% if item.unread_count %}<span class="chat-count" data-chat-row-unread aria-label="{{ item.unread_count }} mensagens não lidas">{{ item.unread_count }}</span>{% endif %}</div>
+                </div>
+            </a>
+        </li>
+    {% else %}<li class="chat-list-empty"><span aria-hidden="true">{% include 'icons/message.svg' %}</span><h3>Boas conversas começam aqui.</h3><p>Encontre uma pessoa acima e compartilhe sua primeira ideia.</p></li>{% endfor %}
+    </ul>
+    <p class="chat-filter-empty" data-chat-filter-empty role="status" hidden>Nenhuma conversa encontrada.</p>
+    <a class="chat-connections-link" href="/conexoes">{% include 'icons/user-plus.svg' %} Encontrar pessoas {% include 'icons/arrow-right.svg' %}</a>
+</aside>

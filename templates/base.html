@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="{{ ui_preferences.color_scheme }}" data-text-size="{{ ui_preferences.text_size }}" data-high-contrast="{{ ui_preferences.high_contrast|string|lower }}" data-reduce-motion="{{ ui_preferences.reduce_motion|string|lower }}" data-card-hover="{{ ui_preferences.card_hover|string|lower }}" data-card-density="{{ ui_preferences.card_density }}" data-card-excerpt="{{ ui_preferences.card_excerpt|string|lower }}" data-chat-show-preview="{{ ui_preferences.chat_preview|string|lower }}" data-chat-show-timestamps="{{ ui_preferences.chat_timestamps|string|lower }}" data-chat-enter-send="{{ ui_preferences.chat_enter_send|string|lower }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}Criti-CARD{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml">
+    <link rel="preload" href="{{ url_for('static', filename='fonts/CormorantGaramond-Variable.ttf') }}" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="{{ url_for('static', filename='fonts/Manrope-Variable.ttf') }}" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='tokens.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='shell.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cards.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='catalog.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='social.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='notifications.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='connections.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='live-search.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='reward-styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='progression.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='thematic-communities.css') }}">
+    {% block styles %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='motion.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='preferences.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='responsive.css') }}">
+    <script src="{{ url_for('static', filename='forms.js') }}" type="module"></script>
+    <script src="{{ url_for('static', filename='cards.js') }}" type="module"></script>
+    <script src="{{ url_for('static', filename='site.js') }}" type="module"></script>
+    <script src="{{ url_for('static', filename='toasts.js') }}" type="module"></script>
+    <script src="{{ url_for('static', filename='notifications.js') }}" type="module"></script>
+    <script src="{{ url_for('static', filename='social.js') }}" type="module"></script>
+    <script src="{{ url_for('static', filename='connections.js') }}" type="module"></script>
+    <script src="{{ url_for('static', filename='live-search.js') }}" type="module"></script>
+    {% block scripts %}{% endblock %}
+</head>
+<body>
+    <a class="skip-link" href="#main">Pular para o conteúdo</a>
+    {% include 'components/navbar.html' %}
+    <main id="main" class="page" tabindex="-1">
+        {% include 'components/flashes.html' %}
+        {% block content %}{% endblock %}
+    </main>
+    {% include 'components/reader_dialog.html' %}
+    {% include 'components/crop_dialog.html' %}
+    {% include 'components/toasts.html' %}
+    {% include 'components/footer.html' %}
+</body>
+</html>

@@ -1,0 +1,59 @@
+/* Motion stays separate from layout; content remains accessible without JS. */
+:where(a, button, summary) { transition: color var(--motion-fast), background-color var(--motion), border-color var(--motion); }
+.button { transition: translate var(--motion), scale var(--motion-fast), border-color var(--motion), box-shadow var(--motion), background-color var(--motion); }
+.button:not(:disabled):active { scale: .98; translate: 0 0; }
+.icon-button { transition: scale var(--motion-fast), background-color var(--motion), border-color var(--motion), color var(--motion-fast); }
+.icon-button:not(:disabled):active { scale: .94; }
+.text-button, .password-toggle, .search-submit { transition: color var(--motion-fast), background-color var(--motion), opacity var(--motion-fast); }
+.brand { transition: opacity var(--motion); }
+.brand:hover { opacity: .85; }
+.nav-link, .category-tab, .account-menu > summary, .account-panel > a, .account-logout button {
+    transition: color var(--motion), background-color var(--motion), border-color var(--motion), box-shadow var(--motion);
+}
+.account-menu > summary .icon { transition: transform var(--motion); }
+.nav-toggle .icon { transition: rotate var(--motion); }
+.nav-toggle[aria-expanded=true] .icon { rotate: 90deg; }
+.account-menu[open] .account-panel, .support[open] > form { animation: cc-reveal var(--motion); }
+.footer-column nav .icon, .footer-explore .icon, .auth-explore .icon, .back-link .icon, .read-review .icon {
+    transition: translate var(--motion), color var(--motion);
+}
+.footer-column nav a:hover .icon, .footer-explore:hover .icon, .auth-explore:hover .icon, .read-review:hover .icon { translate: 3px 0; }
+.back-link:hover .icon { translate: -3px 0; }
+:where(input:not([type=hidden]), textarea, select) { transition: border-color var(--motion), box-shadow var(--motion), background-color var(--motion); }
+:where(input:not([type=hidden]), textarea, select):focus-visible { box-shadow: 0 0 0 3px var(--gold-wash); }
+.upload-box, .search-form { transition: border-color var(--motion), box-shadow var(--motion); }
+.upload-box:focus-within, .search-form:focus-within { border-color: var(--gold-border); box-shadow: 0 0 0 3px var(--gold-wash); }
+.password-rules li, .character-count { transition: color var(--motion); }
+.password-rules li[data-met=true]::before { animation: cc-check var(--motion); }
+.field-error:not([hidden]), .form-status:not([hidden]), .caps-lock:not([hidden]), .filter-tags > a { animation: cc-fade var(--motion); }
+.flash { animation: cc-reveal var(--motion-enter); }
+.community-intro, .profile-summary, .composer-heading, .auth-intro { animation: cc-reveal var(--motion-enter); }
+.community-filters, .auth-panel, .form-panel, .composer-form, .editor-preview { animation: cc-fade var(--motion-enter); }
+.specimen-card { animation: cc-specimen 650ms var(--ease-out); }
+.review-card { animation: cc-fade var(--motion-enter); transition: translate var(--motion), border-color var(--motion), box-shadow var(--motion); }
+.review-card:nth-child(3n + 2) { animation-delay: 45ms; }
+.review-card:nth-child(3n) { animation-delay: 90ms; }
+.card-front, .card-back { animation: cc-reveal var(--motion); }
+.card-cover { transition: transform 600ms var(--ease-out); }
+:is(.review-dialog, .crop-dialog, .draft-preview-dialog)[open] { animation: cc-dialog 280ms var(--ease-out); }
+:is(.review-dialog, .crop-dialog, .draft-preview-dialog)::backdrop { animation: cc-fade var(--motion); }
+@keyframes cc-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cc-reveal { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+@keyframes cc-dialog { from { opacity: 0; translate: 0 12px; scale: .985; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes cc-check { from { scale: .7; } to { scale: 1; } }
+@keyframes cc-specimen { from { opacity: 0; transform: translateY(14px) rotate(-10deg); } to { opacity: 1; transform: rotate(-7deg); } }
+@media (hover: hover) and (pointer: fine) {
+    .button:not(:disabled):hover:not(:active) { translate: 0 -2px; }
+    .icon-button:not(:disabled):hover:not(:active) { scale: 1.04; }
+    .review-card:hover { translate: 0 -3px; }
+    .card-cover-link:hover .card-cover { transform: scale(1.025); }
+}
+@media (max-width: 1050px) { .main-nav:not([hidden]) { animation: cc-reveal var(--motion); } }
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    .button, .icon-button, .review-card, .card-cover, .nav-toggle .icon, .read-review .icon,
+    .footer-column nav .icon, .footer-explore .icon, .auth-explore .icon, .back-link .icon {
+        translate: none !important; scale: none !important; rotate: none !important;
+    }
+    .card-cover { transform: none !important; }
+}

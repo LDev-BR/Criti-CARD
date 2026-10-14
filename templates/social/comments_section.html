@@ -1,0 +1,35 @@
+<section class="comments-section" id="comments" aria-labelledby="comments-heading">
+    <div class="section-heading"><h2 id="comments-heading">Comentários <span data-comment-total>{{ card_comments.total }}</span></h2></div>
+    {% if usuario_atual %}
+    <form class="social-compose" method="post" action="{{ url_for('social.comments', card_id=c.id) }}" data-social-form="comment">
+        {% include 'components/csrf.html' %}
+        <label for="comment-body">Sua opinião sobre esta crítica</label>
+        <textarea id="comment-body" name="body" rows="4" minlength="1" maxlength="2000" required placeholder="Converse com respeito."></textarea>
+        <p class="muted">Até 2000 caracteres.</p>
+        <button class="button" type="submit">{% include 'icons/send.svg' %} Publicar comentário</button>
+        <p class="social-status" data-social-status role="status" hidden></p>
+    </form>
+    {% else %}<p class="muted"><a href="{{ url_for('auth.index', next=url_for('cards.detail', id=c.id)) }}">Entre na sua conta</a> para comentar.</p>{% endif %}
+    <div class="comment-list" data-comment-list data-card-id="{{ c.id }}">
+    {% for comment in card_comments.comments %}
+        <article class="social-comment" id="comment-{{ comment.id }}" data-comment-id="{{ comment.id }}">
+            <header><a href="{{ url_for('community.profile', username=comment.username) }}">@{{ comment.username }}</a><time datetime="{{ comment.created_at.isoformat() }}">{{ comment.created_at.strftime('%d/%m/%Y %H:%M') }}</time></header>
+            <p class="preserve-lines" data-comment-body>{{ comment.body }}</p>
+            {% if usuario_atual %}
+            <div class="comment-actions">
+                {% if usuario_atual.id == comment.author_id %}<a class="social-link" href="{{ url_for('social.edit_comment', comment_id=comment.id) }}">Editar</a>{% endif %}
+                {% if usuario_atual.id == comment.author_id or usuario_atual.admin == 1 %}
+                <form method="post" action="{{ url_for('social.delete_comment', comment_id=comment.id) }}" data-social-form="delete-comment">{% include 'components/csrf.html' %}<button class="social-link" type="submit">Excluir</button></form>
+                {% endif %}
+                <a class="social-link" href="{{ url_for('social.report', target_type='comment', target_id=comment.id) }}">Denunciar</a>
+            </div>
+            {% endif %}
+        </article>
+    {% else %}<p class="muted" data-comment-empty>Seja a primeira pessoa a comentar.</p>{% endfor %}
+    </div>
+    {% if card_comments.pages > 1 %}<nav class="pagination" aria-label="Páginas de comentários">
+        {% if card_comments.page > 1 %}<a href="{{ url_for('social.comments', card_id=c.id, page=card_comments.page-1) }}">Anterior</a>{% endif %}
+        <span>{{ card_comments.page }} de {{ card_comments.pages }}</span>
+        {% if card_comments.page < card_comments.pages %}<a href="{{ url_for('social.comments', card_id=c.id, page=card_comments.page+1) }}">Próxima</a>{% endif %}
+    </nav>{% endif %}
+</section>

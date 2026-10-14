@@ -1,0 +1,14 @@
+<aside class="auth-intro">
+    <p class="eyebrow">SEU OLHAR. SUA COLEÇÃO.</p>
+    <h1>{{ 'Boas histórias merecem' if joining else 'O próximo favorito' }} <em>{{ 'a sua crítica.' if joining else 'começa aqui.' }}</em></h1>
+    <p class="auth-description">Guarde suas impressões em cards, descubra novos favoritos e encontre quem compartilha o seu gosto.</p>
+    <div class="auth-art" aria-hidden="true">
+        <div class="auth-orbit"></div>
+        <div class="specimen-card">
+            <div class="specimen-cover"><span>CC</span><i></i></div>
+            <div class="specimen-body"><span class="specimen-label">UMA EXPERIÊNCIA MEMORÁVEL</span><div><strong>Sua próxima<br>boa descoberta</strong><span class="specimen-score">98<small>/100</small></span></div><span class="specimen-rule"></span><span class="specimen-caption">Um olhar que vale compartilhar.</span></div>
+        </div>
+        <span class="art-note">Cada opinião tem uma história.</span>
+    </div>
+    <a class="auth-explore" href="{{ url_for('discovery.index') }}">Explorar o Criti-CARD {% include 'icons/arrow-right.svg' %}</a>
+</aside>

@@ -1,0 +1,4 @@
+{% macro icon(name) -%}
+{% include 'icons/' + name + '.svg' %}
+{%- endmacro %}
+{% set category_icons = {'jogos':'gamepad', 'filmes':'film', 'series':'monitor', 'livros':'book', 'animes':'play', 'mangas':'panels'} %}

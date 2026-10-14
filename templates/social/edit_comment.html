@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Editar comentário · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='social.css') }}">{% endblock %}
+{% block content %}
+<section class="social-page"><p class="eyebrow">SUA CONVERSA</p><h1>Editar comentário</h1>
+<form class="social-compose" method="post">
+    {% include 'components/csrf.html' %}
+    <label for="comment-body">Comentário</label>
+    <textarea id="comment-body" name="body" maxlength="2000" rows="6" required>{{ comment.body }}</textarea>
+    <button class="button" type="submit">Salvar comentário</button>
+    <a class="social-link" href="{{ url_for('social.comments', card_id=comment.card_id) }}">Cancelar</a>
+</form></section>
+{% endblock %}

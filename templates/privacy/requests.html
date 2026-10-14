@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Pedidos sobre dados · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='forms.css') }}"><link rel="stylesheet" href="{{ url_for('static', filename='privacy.css') }}">{% endblock %}
+{% block content %}
+<div class="privacy-page">
+    <header class="privacy-heading"><p class="eyebrow">PRIVACIDADE</p><h1>Pedidos sobre seus dados</h1><p class="muted">Converse com a equipe em um canal privado. Você recebe um protocolo e acompanha as respostas aqui.</p><a href="{{ url_for('privacy.policy') }}">Como tratamos seus dados</a> · <a href="{{ url_for('settings.index', secao='conta') }}">Voltar à conta</a></header>
+    <section class="privacy-form" aria-labelledby="novo-pedido"><h2 id="novo-pedido">Novo pedido</h2><p class="muted">Não envie senhas, CPF ou documentos. Conte apenas o necessário para explicar seu pedido.</p>
+    {% if error and not error.field %}<p class="field-error" role="alert">{{ error }}</p>{% endif %}
+    <form method="post" action="{{ url_for('privacy.requests') }}">
+        {% include 'components/csrf.html' %}
+        <label for="privacy-kind">Assunto</label><select id="privacy-kind" name="kind" required{% if error and error.field == 'kind' %} aria-invalid="true" aria-describedby="privacy-kind-error"{% endif %}><option value="">Escolha um assunto</option>{% for key, label in kinds.items() %}<option value="{{ key }}"{% if values.get('kind') == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+        {% if error and error.field == 'kind' %}<p id="privacy-kind-error" class="field-error" role="alert">{{ error }}</p>{% endif %}
+        <label for="privacy-body">O que você precisa?</label><textarea id="privacy-body" name="body" rows="5" maxlength="3000" required aria-describedby="privacy-body-help{% if error and error.field == 'body' %} privacy-body-error{% endif %}"{% if error and error.field == 'body' %} aria-invalid="true"{% endif %}>{{ values.get('body', '') }}</textarea><p id="privacy-body-help" class="field-help">Até 3000 caracteres. O pedido é gratuito e não é publicado na comunidade.</p>
+        {% if error and error.field == 'body' %}<p id="privacy-body-error" class="field-error" role="alert">{{ error }}</p>{% endif %}
+        <button class="button" type="submit">Enviar pedido</button>
+    </form></section>
+    <section aria-labelledby="meus-pedidos"><h2 id="meus-pedidos">Seus pedidos <span class="muted">({{ listing.total }})</span></h2>
+    <ul class="privacy-list">{% for item in listing.requests %}<li><a href="{{ url_for('privacy.detail', protocol=item.protocol) }}"><strong>{{ item.kind_label }}</strong><span class="privacy-status">{{ item.status_label }}</span><span class="privacy-protocol">{{ item.protocol }}</span></a><p class="muted">Enviado em <time datetime="{{ item.created_at }}">{{ item.created_at[:10] }}</time></p></li>{% else %}<li><p>Você ainda não enviou pedidos. Use o formulário acima quando precisar falar sobre seus dados.</p></li>{% endfor %}</ul>
+    {% include 'privacy/pagination.html' %}</section>
+</div>
+{% endblock %}

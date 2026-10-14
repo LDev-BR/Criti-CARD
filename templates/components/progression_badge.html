@@ -1,0 +1,3 @@
+{% macro progression_badge(style) -%}
+{% if style.get('public') %}<span class="progression-badge" data-progression-badge>{% include 'icons/award.svg' %}<span>Nível {{ style.level }} · {{ style.tier_name }}</span>{% if style.title_name!=style.tier_name %}<span class="equipped-badge">Título: {{ style.title_name }}</span>{% endif %}{% if style.badge_name %}<span class="equipped-badge">{{ style.badge_name }}</span>{% endif %}</span>{% endif %}
+{%- endmacro %}

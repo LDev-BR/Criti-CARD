@@ -1,0 +1,7 @@
+{% if cards.pages > 1 %}
+<nav class="pagination" aria-label="Paginação">
+    {% if cards.number > 1 %}<a class="button secondary small" href="{{ url_for(pagination_endpoint, page=cards.number - 1, **pagination_args) }}">{% include 'icons/chevron-left.svg' %} Anterior</a>{% endif %}
+    <span class="muted">Página {{ cards.number }} de {{ cards.pages }}</span>
+    {% if cards.number < cards.pages %}<a class="button secondary small" href="{{ url_for(pagination_endpoint, page=cards.number + 1, **pagination_args) }}">Próxima {% include 'icons/chevron-right.svg' %}</a>{% endif %}
+</nav>
+{% endif %}

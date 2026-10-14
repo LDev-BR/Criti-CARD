@@ -1,0 +1,21 @@
+{% from 'components/icons.html' import icon %}
+<li class="connection-person" data-connection-row="{{ person.id }}" data-social-user="{{ person.id }}">
+    <a class="connection-identity" href="{{ url_for('community.profile', username=person.username) }}">
+        {% if person.imagem %}<img class="connection-avatar" src="{{ person.avatar_url }}" alt="" loading="lazy">
+        {% else %}<span class="connection-avatar connection-initial" aria-hidden="true">{{ person.nome[:1]|upper }}</span>{% endif %}
+        <span><strong>{{ person.nome }}</strong><span class="connection-handle">@{{ person.username }}</span></span>
+    </a>
+    <p class="connection-bio">{{ person.about or person.apelido or 'Uma nova perspectiva na comunidade.' }}</p>
+    <div class="connection-actions">
+        {% if tab == 'friends' %}
+        <form method="post" action="{{ url_for('chat.start') }}">{% include 'components/csrf.html' %}<input type="hidden" name="target_id" value="{{ person.id }}"><button class="button secondary small" type="submit">{{ icon('message') }} Conversar</button></form>
+        {% elif tab in ('discover', 'followers', 'following') %}
+        <form method="post" action="{{ url_for('people.follow', user_id=person.id) }}" data-connection-form="follow">
+            {% include 'components/csrf.html' %}<input type="hidden" name="following" value="{{ 'false' if person.following else 'true' }}"><input type="hidden" name="aba" value="{{ active_tab }}"><input type="hidden" name="q" value="{{ query }}"><input type="hidden" name="page" value="{{ page }}">
+            <button type="submit" class="button secondary small" aria-pressed="{{ 'true' if person.following else 'false' }}" aria-label="{{ 'Deixar de seguir' if person.following else 'Seguir' }} @{{ person.username }}">{{ icon('check' if person.following else 'user-plus') }} {{ 'Seguindo' if person.following else 'Seguir' }}</button>
+        </form>
+        {% endif %}
+        {% with friendship=person.friendship %}{% include 'social/friendship_actions.html' %}{% endwith %}
+        <a class="connection-profile-link" href="{{ url_for('community.profile', username=person.username) }}">Ver perfil {{ icon('arrow-up-right') }}</a>
+    </div>
+</li>

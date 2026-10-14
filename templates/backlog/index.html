@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% block title %}{{ 'Minha coleção' if own_collection else 'Coleção de ' + owner.nome }} · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='backlog.css') }}">{% endblock %}
+{% block content %}
+<div data-live-search="collection">
+{% include 'components/live_search_feedback.html' %}
+<div data-live-body>
+<section class="backlog-intro">
+    <div>
+        <p class="eyebrow">{{ 'SEU PRÓXIMO CAPÍTULO' if own_collection else 'DESCOBERTAS COMPARTILHADAS' }}</p>
+        <h1>{{ 'Histórias para viver.' if own_collection else 'Coleção de ' + owner.nome }}</h1>
+        <p class="muted">{{ 'Organize o que quer jogar, assistir e ler. No seu ritmo.' if own_collection else 'As obras que ' + owner.nome + ' escolheu compartilhar.' }}</p>
+    </div>
+    {% if own_collection %}<a class="button secondary" href="{{ url_for('backlog.catalog') }}">{{ icon('plus') }} Explorar catálogo</a>{% endif %}
+</section>
+<div class="backlog-collection-meta">
+    <span>{{ collection_total }} {{ 'obra' if collection_total == 1 else 'obras' }}{{ ' na sua coleção' if own_collection else ' compartilhadas' }}</span>
+    {% if own_collection %}<span class="backlog-privacy-note">{{ icon('eye') if default_visibility == 'public' else icon('eye-off') }} Novas obras começam {{ 'públicas' if default_visibility == 'public' else 'privadas' }}, conforme suas preferências. Você pode alterar cada obra.</span>{% endif %}
+</div>
+<nav class="backlog-status-tabs" aria-label="Filtrar por status">
+    <a href="{{ url_for(collection_endpoint, **dict(collection_route_args, categoria=filters.categoria, q=filters.q)) }}" {% if not filters.status %}aria-current="page"{% endif %}>Todas <span>{{ collection_total }}</span></a>
+    {% for value, label in statuses.items() %}
+    <a href="{{ url_for(collection_endpoint, **dict(collection_route_args, status=value, categoria=filters.categoria, q=filters.q)) }}" {% if filters.status == value %}aria-current="page"{% endif %}>{{ label }} <span>{{ counts[value] }}</span></a>
+    {% endfor %}
+</nav>
+{% include 'backlog/filters.html' %}
+<div class="section-heading backlog-heading"><h2 tabindex="-1" data-live-results-heading data-live-count="{{ items|length }}">{{ 'Sua seleção' if filters.status or filters.categoria or filters.q else 'Na coleção' }} <span class="muted">({{ items|length }})</span></h2>
+    {% if own_collection %}<a class="backlog-share-link" href="{{ url_for('backlog.collection', username=owner.username) }}">{{ icon('eye') }} Ver coleção compartilhada</a>{% endif %}
+</div>
+<section class="backlog-grid" aria-label="Obras da coleção">
+    {% for item in items %}{% include 'backlog/item.html' %}{% else %}
+    <div class="empty-state"><h3>{{ 'Nenhuma obra nesta seleção' if filters.status or filters.categoria or filters.q else ('Uma coleção de possibilidades' if own_collection else 'Ainda sem obras compartilhadas') }}</h3>
+        <p class="muted">{{ 'Experimente outro filtro para encontrar suas obras.' if filters.status or filters.categoria or filters.q else ('Escolha uma obra do catálogo e guarde para depois. A crítica pode vir quando quiser.' if own_collection else 'As descobertas públicas desta pessoa aparecerão aqui.') }}</p>
+        {% if filters.status or filters.categoria or filters.q %}<a class="button secondary small" href="{{ url_for(collection_endpoint, **collection_route_args) }}">{{ icon('reset') }} Limpar filtros</a>
+        {% elif own_collection %}<a class="button secondary small" href="{{ url_for('backlog.catalog') }}">{{ icon('compass') }} Encontrar minha próxima obra</a>{% endif %}
+    </div>{% endfor %}
+</section>
+<p class="backlog-live-status" role="status" aria-live="polite" data-backlog-message></p>
+</div></div>
+{% endblock %}
+{% block scripts %}<script type="module" src="{{ url_for('static', filename='backlog.js') }}"></script>{% endblock %}

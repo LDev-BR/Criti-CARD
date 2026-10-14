@@ -1,0 +1,13 @@
+<details class="backlog-filter-disclosure" data-responsive-disclosure {% if filters.status or filters.categoria or filters.q %}open data-keep-open{% endif %}>
+<summary>{{ icon('search') }}<span>Buscar e filtrar obras{% if filters.categoria or filters.q %} · filtros aplicados{% endif %}</span>{{ icon('chevron-down') }}</summary>
+<form class="backlog-filters" method="get" action="{{ url_for('backlog.catalog') if works is defined else url_for(collection_endpoint, **collection_route_args) }}" role="search">
+    {% if filters.status and works is not defined %}<input type="hidden" name="status" value="{{ filters.status }}">{% endif %}
+    <div class="backlog-filter-category"><label for="backlog-category">Categoria</label>
+        <select id="backlog-category" name="categoria"><option value="">Todas as categorias</option>{% for category in categories %}<option value="{{ category.slug }}" {% if filters.categoria == category.slug %}selected{% endif %}>{{ category.nome }}</option>{% endfor %}</select>
+    </div>
+    <div class="backlog-filter-search"><label for="backlog-q">Buscar obra</label><input id="backlog-q" type="search" name="q" maxlength="120" value="{{ filters.q }}" placeholder="Qual história você procura?"></div>
+    <button type="submit" class="button secondary small">{{ icon('search') }} Buscar</button>
+    {% if filters.status or filters.categoria or filters.q %}<a class="backlog-reset" data-live-reset href="{{ url_for('backlog.catalog') if works is defined else url_for(collection_endpoint, **collection_route_args) }}">{{ icon('reset') }} Limpar</a>{% endif %}
+</form>
+{% if works is defined and usuario_atual %}<div class="catalog-category-follows" aria-label="Acompanhar temas"><span>Acompanhar temas</span>{% for category in categories %}<form action="{{ url_for('social.follow_category', category_id=category.id) }}" method="post">{% include 'components/csrf.html' %}<input type="hidden" name="following" value="{{ 'false' if category_follows.get(category.id) else 'true' }}"><button type="submit" class="category-follow-chip {% if category_follows.get(category.id) %}is-following{% endif %}">{{ 'Seguindo' if category_follows.get(category.id) else 'Seguir' }} {{ category.nome }}</button></form>{% endfor %}</div>{% endif %}
+</details>

@@ -1,0 +1,11 @@
+[data-live-search] { position: relative; }
+[data-live-body] { min-width: 0; }
+.live-search-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); }
+[data-live-state="error"] .live-search-feedback { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px; margin-bottom: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+[data-live-state="error"] .live-search-status { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; flex: 1 1 240px; }
+[data-live-search][aria-busy="true"]::before { content: ''; position: absolute; z-index: 2; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), transparent); animation: live-search-loading 1.2s ease-in-out infinite; pointer-events: none; }
+[data-live-search][aria-busy="true"] input[type="search"] { border-color: var(--gold); }
+[data-live-results-heading] { scroll-margin-top: 90px; }
+@keyframes live-search-loading { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { [data-live-search][aria-busy="true"]::before { animation: none; } }
+html[data-reduce-motion="true"] [data-live-search][aria-busy="true"]::before { animation: none; }

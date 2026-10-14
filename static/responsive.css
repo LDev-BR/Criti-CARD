@@ -1,0 +1,26 @@
+/* Shared spacing and native disclosure controls; page layouts keep their own rules. */
+.page { margin: 24px auto 32px; min-height: 0; }
+.skip-link { z-index: 30; }
+.button, .nav-link, .account-panel > a, .account-logout button { min-height: 44px; }
+.filter-disclosure > summary, .backlog-filter-disclosure > summary, .section-disclosure > summary {
+    display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 12px;
+    color: var(--gold-light); font-size: 14px; list-style: none; border-radius: 5px;
+}
+.filter-disclosure > summary::-webkit-details-marker, .backlog-filter-disclosure > summary::-webkit-details-marker,
+.section-disclosure > summary::-webkit-details-marker { display: none; }
+.filter-disclosure > summary > .icon:last-child, .backlog-filter-disclosure > summary > .icon:last-child,
+.section-disclosure > summary > .icon:last-child { margin-left: auto; width: 16px; height: 16px; }
+details[open].filter-disclosure > summary > .icon:last-child,
+details[open].backlog-filter-disclosure > summary > .icon:last-child,
+details[open].section-disclosure > summary > .icon:last-child { transform: rotate(180deg); }
+@media (min-width: 851px) {
+    [data-navigation-ready] [data-responsive-disclosure][open] > summary { display: none; }
+}
+@media (max-width: 850px) {
+    .page { padding-inline: 20px; margin-block: 20px 28px; }
+    .filter-disclosure[open] > summary, .backlog-filter-disclosure[open] > summary { margin-bottom: 12px; }
+    .section-disclosure[open] > summary { margin-bottom: 12px; border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 520px) {
+    .page { padding-inline: 16px; margin-block: 18px 24px; }
+}

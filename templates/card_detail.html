@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% from 'components/catalog_art.html' import catalog_art %}
+{% block title %}{{ c.titulo }} · Criti-CARD{% endblock %}
+{% block content %}
+<article class="full-review">
+    <a class="back-link" href="{{ url_for('profiles.dashboard', aba='arquivados') if c.archived else url_for('community.feed') }}">{% include 'icons/chevron-left.svg' %} {{ 'Histórico privado' if c.archived else 'Voltar às críticas' }}</a>
+    {% if c.archived %}<p class="muted">Esta crítica anterior foi preservada no seu histórico. Ela não é exibida na comunidade.</p>{% endif %}
+    <header class="full-review-heading">
+        <div>{% if c.categoria_nome %}<p class="eyebrow">{{ c.categoria_nome }}</p>{% endif %}<p class="muted"><a href="{{ url_for('community.profile', username=c.username) }}">{{ c.nome }} · @{{ c.username }}</a></p><h1>{{ c.titulo }}</h1></div>
+        <span class="score" aria-label="Nota {{ c.nota }} de 100">{{ c.nota }}<small>/100</small></span>
+    </header>
+    {{ catalog_art(image_url('cover', c.capa), art_for_marker(c.capa), c.titulo, 'full-review-cover', loading='eager') }}
+    <div class="full-review-text preserve-lines">{{ c.sobre }}</div>
+    {% if c.archived %}
+    <p class="muted">{{ social_state.like_count }} curtidas anteriores</p>
+    <section aria-label="Comentários preservados"><h2>Comentários anteriores ({{ card_comments.total }})</h2>
+        {% for comment in card_comments.comments %}<article class="comment"><p class="muted">{{ comment.nome }} · @{{ comment.username }}</p><p class="preserve-lines">{{ comment.body }}</p></article>{% endfor %}
+    </section>
+    {% if card_comments.pages > 1 %}<nav class="pagination" aria-label="Páginas dos comentários anteriores">
+        {% if card_comments.page > 1 %}<a href="{{ url_for('cards.detail', id=c.id, comments_page=card_comments.page-1) }}">Comentários anteriores</a>{% endif %}
+        <span>Página {{ card_comments.page }} de {{ card_comments.pages }}</span>
+        {% if card_comments.page < card_comments.pages %}<a href="{{ url_for('cards.detail', id=c.id, comments_page=card_comments.page+1) }}">Mais comentários</a>{% endif %}
+    </nav>{% endif %}
+    {% else %}
+    {% include 'components/card_actions.html' %}{% include 'components/social_actions.html' %}{% include 'social/comments_section.html' %}
+    {% endif %}
+</article>
+{% endblock %}

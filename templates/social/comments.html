@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Comentários · {{ c.titulo }} · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='social.css') }}">{% endblock %}
+{% block content %}
+<section class="social-page">
+    <p class="eyebrow">CONVERSAS SOBRE HISTÓRIAS</p>
+    <h1>{{ c.titulo }}</h1>
+    <a class="social-link" href="{{ url_for('cards.detail', id=c.id) }}">Voltar à crítica</a>
+    {% include 'components/social_actions.html' %}
+    {% include 'social/comments_section.html' %}
+</section>
+<script type="module" src="{{ url_for('static', filename='social.js') }}"></script>
+{% endblock %}

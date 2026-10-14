@@ -1,0 +1,3 @@
+{% macro reward_avatar(source, style, alt='', image_class='avatar', lazy=false) -%}
+<span class="reward-avatar" data-avatar-style="{{ style.get('frame_slug','frame_classic') }}"><img class="{{ image_class }}" src="{{ source }}" alt="{{ alt }}" {% if lazy %}loading="lazy"{% endif %}></span>
+{%- endmacro %}

@@ -1,0 +1,33 @@
+{% from 'components/form_fields.html' import attrs, error, upload with context %}
+<fieldset class="form-section">
+    <legend><span>{{ profile_number|default('01') }}</span> Seu perfil público</legend>
+    {% set avatar_source = image_url('avatar', usuario.imagem) if usuario is defined else url_for('static', filename='default-avatar.svg') %}
+    <div class="field-row">
+        <div class="field">
+            <label for="nome">Nome público <span class="field-optional">Opcional</span></label>
+            <input id="nome" name="nome" value="{{ values.get('nome', '') }}" maxlength="80" autocomplete="nickname" placeholder="Um nome ou pseudônimo" {{ attrs('nome', true) }}>
+            <small id="nome-help" class="field-help">Sem preencher, usamos seu username. Não precisa ser seu nome real.</small>
+            {{ error('nome') }}
+        </div>
+        <div class="field">
+            <label for="apelido">Apelido <span class="field-optional">Opcional</span></label>
+            <input id="apelido" name="apelido" value="{{ values.get('apelido', '') }}" maxlength="40" autocomplete="nickname" placeholder="Como gosta de ser chamado?" {{ attrs('apelido') }}>
+            {{ error('apelido') }}
+        </div>
+    </div>
+    {% if include_username|default(true) %}{% include 'components/username_field.html' %}{% endif %}
+    <div class="field">
+        <label for="about">Sobre você <span class="field-optional">Opcional</span></label>
+        <textarea id="about" name="about" maxlength="2000" rows="3" data-counter="about-count" placeholder="O que você adora assistir, jogar ou ler?" {{ attrs('about', true) }}>{{ values.get('about', '') }}</textarea>
+        <div class="field-meta"><small id="about-help" class="field-help">Uma breve apresentação para quem visitar seu perfil.</small><span id="about-count" class="character-count">{{ values.get('about', '')|length }}/2000</span></div>
+        {{ error('about') }}
+    </div>
+    {{ upload('imagem', 'Foto de perfil', avatar_source, avatar=true, editing=usuario is defined) }}
+</fieldset>
+{% if include_email|default(true) %}
+<div class="field">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" value="{{ values.get('email', '') }}" maxlength="254" autocomplete="email" {{ attrs('email') }} required>
+    {{ error('email') }}
+</div>
+{% endif %}

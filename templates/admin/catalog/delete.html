@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% from 'components/icons.html' import icon %}
+{% from 'components/catalog_art.html' import catalog_art %}
+{% block title %}Excluir obra do catálogo · Criti-CARD{% endblock %}
+{% block styles %}<link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">{% endblock %}
+{% block content %}
+<section class="admin-shell admin-confirm-shell">
+    <a class="back-link" href="{{ url_for('admin_catalog.index') }}">{{ icon('chevron-left') }} Gerenciar obras</a>
+    <header class="admin-heading"><div><p class="eyebrow">CONFIRME A ALTERAÇÃO</p><h1>Excluir do catálogo</h1><p class="muted">Confira o que acontece com esta obra antes de continuar.</p></div></header>
+    <div class="admin-confirm-panel">
+        <div class="admin-confirm-work"><div class="admin-work-cover">{{ catalog_art(work.cover_url, work.cover_art, title=work.titulo, width=180, height=120) }}</div><div><span class="admin-category">{{ work.category_name }}</span><h2>{{ work.titulo }}</h2></div></div>
+        <div class="admin-confirm-copy"><h3>A obra será retirada das novas escolhas.</h3><p>Ela deixará de aparecer no catálogo e na criação de novas críticas. As críticas e coleções já vinculadas serão preservadas.</p><p class="muted">Esta obra tem {{ usage.cards }} {{ 'crítica' if usage.cards == 1 else 'críticas' }} e está em {{ usage.backlog }} {{ 'coleção' if usage.backlog == 1 else 'coleções' }}. Você poderá reativá-la em <strong>Gerenciar obras → Retiradas</strong>.</p></div>
+        <form method="post" class="admin-confirm-form">
+            {% include 'components/csrf.html' %}
+            <label class="admin-confirm-check"><input type="checkbox" name="confirm" value="1" aria-describedby="confirm-error" {% if (field_errors|default({})).get('confirm') %}aria-invalid="true"{% endif %} required><span>Entendo que esta obra ficará indisponível para novas críticas.</span></label>
+            <small id="confirm-error" class="admin-confirm-error" role="alert" {% if not (field_errors|default({})).get('confirm') %}hidden{% endif %}>{{ (field_errors|default({})).get('confirm', '') }}</small>
+            <div class="admin-form-actions"><a href="{{ url_for('admin_catalog.index') }}">Cancelar</a><button class="button danger" type="submit">{{ icon('trash') }} Excluir do catálogo</button></div>
+        </form>
+    </div>
+</section>
+{% endblock %}

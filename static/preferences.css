@@ -1,0 +1,15 @@
+:root[data-theme=midnight] { --bg: #060708; --panel: #101215; --panel-raised: #171a1e; --line: #292d32; }
+:root[data-theme=midnight] body { background: radial-gradient(ellipse at 50% 0, #101216, var(--bg) 48%); }
+:root[data-high-contrast=true] { --text: #fffdfa; --muted: #d2d4db; --line: #737886; --gold-light: #ffe9b3; --gold-border: #c5a46d; }
+:root[data-high-contrast=true] :is(input, select, textarea) { border-color: var(--line); }
+:root[data-text-size=large] body { font-size: 16px; }
+:root[data-text-size=large] :is(input, select, textarea) { font-size: 16px; }
+:root[data-text-size=large] :is(.card-excerpt, .reader-page, .chat-bubble p) { font-size: 16px; }
+:root[data-text-size=large] .dialog-reader-page { font-size: 19px; }
+:root[data-text-size=large] :is(.settings-option label strong, .settings-option label span, .settings-account-block > p, .settings-preview p) { font-size: 14px; }
+:root[data-text-size=large] .settings-footnote { font-size: 13px; }
+:root[data-card-density=compact] .card-grid { gap: 14px; }
+:root[data-card-excerpt=false] .card-excerpt { display: none; }
+:root[data-chat-show-preview=false] [data-chat-preview] { display: none; }
+:root[data-chat-show-timestamps=false] :is(.chat-bubble time, [data-chat-list-time]) { display: none; }
+:root[data-reduce-motion=true] *, :root[data-reduce-motion=true] *::before, :root[data-reduce-motion=true] *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
